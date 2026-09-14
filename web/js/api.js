@@ -1167,8 +1167,8 @@
       }
       var styleHint = ttsStyleFor(mode, tts);
 
-      var cleanBase = String(tts.baseUrl || '').replace(/\/+$/, '');
-      if (/\/audio\/speech$/i.test(cleanBase)) {
+      var cleanBase = String(tts.baseUrl || '').trim().replace(/\/+$/, '');
+      if (/(?:\/audio)?\/speech$/i.test(cleanBase)) {
         if (tts.mode === 'clone') {
           return Promise.reject(new Error('audio/speech does not support clone mode'));
         }
