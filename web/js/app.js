@@ -1238,9 +1238,12 @@
         if (!url) return;
         App.playUrl(url, Api.MODE_PLAY_FX[st.mode] || null);
       }).catch(function (e) {
-        App.toast(e.message === 'NO_KEY' ? I18n.t('toast.needKey')
-              : e.message === 'NO_MODEL' ? I18n.t('toast.needModel')
-              : I18n.t('toast.ttsFail') + e.message, true);
+        var msg = e && e.message ? e.message : String(e);
+        App.toast(msg === 'NO_KEY' ? I18n.t('toast.needKey')
+              : msg === 'NO_MODEL' ? I18n.t('toast.needModel')
+              : /^TRANSLATE_FAIL:\s*/i.test(msg)
+              ? (I18n.t('toast.translateFail') || 'Translation failed: ') + msg.replace(/^TRANSLATE_FAIL:\s*/i, '')
+              : I18n.t('toast.ttsFail') + msg, true);
       });
     },
 

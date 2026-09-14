@@ -1017,19 +1017,62 @@
         return Promise.resolve(text);
       }
       var llm = Config.section('llm');
-      if (!llm.apiKey) return Promise.resolve(text);
-      return request(localProxy(upstreamUrl(llm.baseUrl, '/chat/completions')), {
+      if (!llm.apiKey) return Promise.reject(new Error('NO_KEY'));
+      var target = langName(toLang);
+      var source = langName(Api.replyLang());
+      var body = {
         model: llm.model,
         messages: [
-          { role: 'system', content: 'You are a translator for a Japanese anime game character (Ryza, cheerful young alchemist). Translate her line into ' + langName(toLang) + ', keeping the playful spoken tone, first-person feel and emotion. Output ONLY the translated line — no quotes, notes or tags.' },
+          {
+            role: 'system',
+            content: 'You are a direct speech translator for an anime game character (Ryza, cheerful young alchemist). ' +
+                     'Translate the line from ' + source + ' into ' + target + '. ' +
+                     'The output must be entirely in ' + target + ' with natural spoken anime tone and emotion. ' +
+                     'Do NOT repeat or echo ' + source + '. ' +
+                     'Do NOT add explanations, notes, romanization, or quotes. Output ONLY the pure translated ' + target + ' line.'
+          },
           { role: 'user', content: text }
         ],
         temperature: 0.3,
-        max_tokens: Math.max(80, (llm.maxTokens || 400))
-      }, llm.apiKey, 60000).then(function (j) {
-        var c = j.choices && j.choices[0] && j.choices[0].message && j.choices[0].message.content;
-        return (c && String(c).trim()) || text;
-      }).catch(function () { return text; });
+        /* Reasoning models (DeepSeek, etc.) consume output tokens for thinking.
+           Budget at least 2048 so reasoning does not exhaust max_tokens before writing content. */
+        max_tokens: Math.max(2048, Number(llm.maxTokens || 400) * 4)
+      };
+      attachThinking(body, {
+        model: llm.model,
+        baseUrl: llm.baseUrl,
+        thinking: 'off',
+        thinkingEffort: 'off'
+      }, _modelMeta && _modelMeta.id === llm.model ? _modelMeta : null);
+      return request(localProxy(upstreamUrl(llm.baseUrl, '/chat/completions')),
+                     body, llm.apiKey, 60000).then(function (j) {
+        var c = choiceText(j);
+        var raw = c;
+        c = String(c || '').replace(/^\uFEFF/, '').trim();
+        c = c.replace(/^```[\w-]*\s*\n?/, '').replace(/\n```\s*$/, '').trim();
+        c = c.replace(/<think\b[^>]*>[\s\S]*?<\/think>\s*/gi, '');
+        c = c.replace(/<reasoning\b[^>]*>[\s\S]*?<\/reasoning>\s*/gi, '');
+        c = c.replace(/<think\b[\s\S]*$/i, '');
+        c = c.replace(/<reasoning\b[\s\S]*$/i, '');
+        c = c.trim();
+        if (!c && raw) {
+          var lines = raw.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+          c = lines[lines.length - 1] || raw;
+        }
+        if (!c) {
+          var m = j && j.choices && j.choices[0] && j.choices[0].message;
+          var r = m && (m.reasoning_content || m.reasoning);
+          if (r) {
+            var rlines = String(r).split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
+            c = rlines[rlines.length - 1] || '';
+          }
+        }
+        if (!c) throw new Error('EMPTY_TRANSLATION');
+        return c;
+      }).catch(function (e) {
+        if (e && e.message === 'NO_KEY') throw e;
+        throw new Error('TRANSLATE_FAIL: ' + (e && e.message ? e.message : e));
+      });
     },
 
     /* ------------------------------------------------------------- LLM */

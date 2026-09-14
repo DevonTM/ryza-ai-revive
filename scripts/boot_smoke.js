@@ -281,6 +281,20 @@ for (const f of ['util.js', 'config.js', 'i18n.js', 'api.js', 'memory.js',
     const genAfterStart = sandbox.App._typeGen;
     sandbox.App.typeBubble('abc', null);
     ok(sandbox.App._typeGen === genAfterStart + 1, 'second type chain bumps the gen token');
+
+    /* Api.translate sanity checks */
+    sandbox.Config.set('llm.lang', 'en');
+    const sameLang = await A.translate('Hello', 'en');
+    ok(sameLang === 'Hello', 'translate passes through when target matches reply lang');
+
+    sandbox.Config.set('llm.apiKey', '');
+    let noKeyErr = null;
+    try {
+      await A.translate('Hello', 'ja');
+    } catch (err) {
+      noKeyErr = err.message;
+    }
+    ok(noKeyErr === 'NO_KEY', 'translate rejects with NO_KEY when apiKey missing');
   } catch (e) {
     bad('runtime: ' + (e && e.stack || e));
   }
