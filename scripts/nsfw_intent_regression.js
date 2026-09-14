@@ -271,5 +271,18 @@ sandbox.Config.set('nsfw.enabled', false);
 N.init();
 ok(N.active() === false, 'init() resets undressed when nsfw disabled');
 
+/* costume-aware screenFact */
+sandbox.Avatar.outfitName = function (id) {
+  return id === 'crf_skn_002_0002' ? 'ディヴェルの抱擁' : '普段着';
+};
+sandbox.Config.set('state.skin', 'crf_skn_002_0002');
+N.reset();
+ok(N.screenFact() === 'いまの画面：ディヴェルの抱擁を着ている。', 'screenFact includes current costume when dressed');
+N.apply(true);
+ok(N.screenFact() === 'いまの画面：肌が見えている（ディヴェルの抱擁は脱いだあと）。', 'screenFact includes stripped costume when undressed');
+sandbox.Config.set('state.skin', 'crf_skn_002_0001');
+N.reset();
+ok(N.screenFact() === 'いまの画面：普段着を着ている。', 'screenFact reflects default costume');
+
 console.log(failures ? '\nNSFW INTENT: ' + failures + ' FAILURES' : '\nNSFW INTENT: ALL PASS');
 process.exit(failures ? 1 : 0);

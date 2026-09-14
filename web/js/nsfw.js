@@ -23,6 +23,26 @@
     }
   }
 
+  function currentOutfit() {
+    try {
+      var av = global.Avatar;
+      var skin = (global.Config && typeof global.Config.section === 'function' &&
+                  global.Config.section('state').skin) || 'crf_skn_002_0001';
+      if (av && typeof av.outfitName === 'function') return av.outfitName(skin);
+      if (av && typeof av.outfitOf === 'function') {
+        var oid = av.outfitOf(skin);
+        var NAMES = {
+          'crf_skn_002_0001': '普段着',
+          'crf_skn_002_0002': 'ディヴェルの抱擁',
+          'crf_skn_002_0003': 'お気に入りの普段着',
+          'crf_skn_002_0004': '百夏の礼装'
+        };
+        return NAMES[oid] || oid;
+      }
+    } catch (e) {}
+    return '普段の服';
+  }
+
   function init() {
     try {
       if (global.Config && typeof global.Config.section === 'function') {
@@ -46,9 +66,10 @@
     reset: function () { apply(false); },
     /* One fact for the system prompt. Not a rule list. */
     screenFact: function () {
+      var outfit = currentOutfit();
       return Nsfw._on
-        ? 'いまの画面：肌が見えている（服は脱いだあと）。'
-        : 'いまの画面：普段の服を着ている。';
+        ? 'いまの画面：肌が見えている（' + outfit + 'は脱いだあと）。'
+        : 'いまの画面：' + outfit + 'を着ている。';
     },
     onTurn: function (reply) {
       var flag = reply && typeof reply.nsfw === 'boolean' ? reply.nsfw : null;

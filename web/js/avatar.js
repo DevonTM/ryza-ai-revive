@@ -252,8 +252,20 @@
       Avatar._applyCamera();
     },
 
+    OUTFIT_NAMES: {
+      'crf_skn_002_0001': '普段着',
+      'crf_skn_002_0002': 'ディヴェルの抱擁',
+      'crf_skn_002_0003': 'お気に入りの普段着',
+      'crf_skn_002_0004': '百夏の礼装'
+    },
+
     outfitOf: function (id) {
       return String(id || 'crf_skn_002_0001').replace(/_(01|99)$/, '');
+    },
+
+    outfitName: function (id) {
+      var oid = Avatar.outfitOf(id || (global.Config && Config.section('state').skin));
+      return Avatar.OUTFIT_NAMES[oid] || oid;
     },
 
     /* --------------------------------------------------- posture (source) */
