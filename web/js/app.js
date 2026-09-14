@@ -2309,6 +2309,15 @@
         App.toast(v ? T('settings.nsfwOn') : T('settings.nsfwOff'));
         App.buildSettings();
       });
+      if (nsfwSec.enabled) {
+        App._select(w, T('settings.nsfwLevel'), nsfwSec.level || 'explicit', [
+          { v: 'soft', t: T('settings.nsfwLevel.soft') },
+          { v: 'explicit', t: T('settings.nsfwLevel.explicit') }
+        ], function (v) {
+          Config.set('nsfw.level', v);
+          App.buildSettings();
+        });
+      }
 
       App._title(w, T('settings.data'));
       var row = document.createElement('div');

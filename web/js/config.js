@@ -124,7 +124,8 @@
 
     /* ---- NSFW / unrestricted roleplay ---- */
     nsfw: {
-      enabled: false
+      enabled: false,
+      level: 'explicit'              // 'soft' | 'explicit'
     },
 
     /* ---- session state ---- */

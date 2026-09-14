@@ -284,5 +284,15 @@ sandbox.Config.set('state.skin', 'crf_skn_002_0001');
 N.reset();
 ok(N.screenFact() === 'いまの画面：普段着を着ている。', 'screenFact reflects default costume');
 
+/* nsfw.level setting: explicit vs soft */
+sandbox.Config.set('nsfw.enabled', true);
+sandbox.Config.set('nsfw.level', 'explicit');
+let expPrompt = A.buildSystemPrompt('chat', 'voice', '', 'ja', N.screenFact());
+ok(/露骨な表現も許可する/.test(expPrompt), 'explicit level includes full directive');
+sandbox.Config.set('nsfw.level', 'soft');
+let softPrompt = A.buildSystemPrompt('chat', 'voice', '', 'ja', N.screenFact());
+ok(/過度に露骨な表現は避けつつ/.test(softPrompt) && !/露骨な表現も許可する/.test(softPrompt),
+   'soft level uses mild/romantic directive');
+
 console.log(failures ? '\nNSFW INTENT: ' + failures + ' FAILURES' : '\nNSFW INTENT: ALL PASS');
 process.exit(failures ? 1 : 0);
