@@ -1167,6 +1167,22 @@
       }
       var styleHint = ttsStyleFor(mode, tts);
 
+      var cleanBase = String(tts.baseUrl || '').replace(/\/+$/, '');
+      if (/\/audio\/speech$/i.test(cleanBase)) {
+        if (tts.mode === 'clone') {
+          return Promise.reject(new Error('audio/speech does not support clone mode'));
+        }
+        // ponytail: standard OpenAI TTS body; skipped speed/pitch, add when tts config gains slider.
+        var speechBody = {
+          model: model,
+          input: text,
+          voice: tts.presetVoice || 'Chloe',
+          response_format: tts.format || 'wav'
+        };
+        if (styleHint) speechBody.instructions = styleHint;
+        return requestAudio(localProxy(cleanBase), speechBody, tts.apiKey, 180000);
+      }
+
       function send(voiceField) {
         audio.voice = voiceField;
         return request(localProxy(upstreamUrl(tts.baseUrl, '/chat/completions')), {

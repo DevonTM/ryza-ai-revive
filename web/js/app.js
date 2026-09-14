@@ -2149,7 +2149,8 @@
         ], function (v) { Config.set('tts.mode', v); App.buildSettings(); });
       } else {
       App._field(w, T('settings.baseUrl'), Config.section('tts').baseUrl,
-        function (v) { Config.set('tts.baseUrl', v); });
+        function (v) { Config.set('tts.baseUrl', v); },
+        { hint: T('settings.ttsBaseHint') });
       App._field(w, T('settings.apiKey'), Config.section('tts').apiKey,
         function (v) { Config.set('tts.apiKey', v); },
         { password: true });
