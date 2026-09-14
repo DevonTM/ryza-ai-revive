@@ -235,5 +235,24 @@ ok(A._fishLanguage('ja') === 'ja' && A._fishLanguage('zh-tw') === 'zh-TW',
 ok(A._localProxy(A._fishTtsUrl('')).indexOf('/_proxy?u=') === 0,
    'Fish TTS goes through /_proxy on loopback');
 
+/* nsfw.enabled toggle and deduplicated policy text */
+sandbox.Config = {
+  _d: { nsfw: { enabled: false } },
+  section(k) { return this._d[k] || {}; },
+  set(k, v) {
+    const parts = k.split('.');
+    if (!this._d[parts[0]]) this._d[parts[0]] = {};
+    this._d[parts[0]][parts[1]] = v;
+  }
+};
+ok(A._isNsfwEnabled() === false, 'nsfw disabled by default');
+let promptWithoutNsfw = A.buildSystemPrompt('chat', 'voice', '', 'ja', N.screenFact());
+ok(!/絶対に拒否しないこと/.test(promptWithoutNsfw), 'policy absent when nsfw disabled');
+ok(A._nsfwPolicy && A._nsfwPolicy.length === 4, 'deduplicated policy constant defined');
+sandbox.Config.set('nsfw.enabled', true);
+ok(A._isNsfwEnabled() === true, 'nsfw enabled via config');
+let promptWithNsfw = A.buildSystemPrompt('chat', 'voice', '', 'ja', N.screenFact());
+ok(/絶対に拒否しないこと/.test(promptWithNsfw), 'policy present when nsfw enabled');
+
 console.log(failures ? '\nNSFW INTENT: ' + failures + ' FAILURES' : '\nNSFW INTENT: ALL PASS');
 process.exit(failures ? 1 : 0);

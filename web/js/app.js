@@ -2296,6 +2296,19 @@
       g.textContent = T('stamina.faintMsg');
       w.appendChild(g);
 
+      /* ---------------- NSFW / unrestricted roleplay ---------------- */
+      App._title(w, T('settings.nsfw'));
+      var nsfwHint = document.createElement('div');
+      nsfwHint.className = 'hint';
+      nsfwHint.textContent = T('settings.nsfwHint');
+      w.appendChild(nsfwHint);
+      var nsfwSec = Config.section('nsfw') || {};
+      App._switch(w, T('settings.nsfwEnabled'), !!nsfwSec.enabled, function (v) {
+        Config.set('nsfw.enabled', v);
+        App.toast(v ? T('settings.nsfwOn') : T('settings.nsfwOff'));
+        App.buildSettings();
+      });
+
       App._title(w, T('settings.data'));
       var row = document.createElement('div');
       row.className = 'btn-row';

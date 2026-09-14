@@ -122,6 +122,11 @@
       cheat: false                   // 作弊：体力 + 金币无限（地图/任务不改）
     },
 
+    /* ---- NSFW / unrestricted roleplay ---- */
+    nsfw: {
+      enabled: false
+    },
+
     /* ---- session state ---- */
     state: {
       mode: 'chat',                  // chat | story | immersive | asmr | text
