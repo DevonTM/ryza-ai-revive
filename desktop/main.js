@@ -69,8 +69,9 @@ function jsonError(status, message) {
 }
 
 async function proxyRequest(request, targetUrl) {
-  if (!String(targetUrl || '').startsWith('https://')) {
-    return jsonError(400, 'proxy target must be https');
+  // ponytail: http allowed for local/LAN endpoints; upgrade to SSRF validation if exposed
+  if (!/^https?:\/\//i.test(String(targetUrl || ''))) {
+    return jsonError(400, 'proxy target must be http or https');
   }
   const headers = { 'User-Agent': 'RyzaChat/1.2.13' };
   const ct = request.headers.get('content-type');

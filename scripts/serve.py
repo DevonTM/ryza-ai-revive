@@ -58,8 +58,9 @@ class Handler(SimpleHTTPRequestHandler):
         time-limited OSS audio URLs; the page pulls them through here so
         the blob is same-origin for the lip-sync analyser)."""
         target = (parse_qs(parsed.query).get("u") or [""])[0]
-        if not target.startswith("https://"):
-            self.send_error(400, "proxy target must be https")
+        # ponytail: http allowed for local/LAN endpoints; upgrade to SSRF validation if exposed
+        if not (target.startswith("https://") or target.startswith("http://")):
+            self.send_error(400, "proxy target must be http or https")
             return
         try:
             headers = {"User-Agent": UA}
@@ -104,8 +105,9 @@ class Handler(SimpleHTTPRequestHandler):
             self.send_error(404, "use POST /_proxy")
             return
         target = (parse_qs(parsed.query).get("u") or [""])[0]
-        if not target.startswith("https://"):
-            self.send_error(400, "proxy target must be https")
+        # ponytail: http allowed for local/LAN endpoints; upgrade to SSRF validation if exposed
+        if not (target.startswith("https://") or target.startswith("http://")):
+            self.send_error(400, "proxy target must be http or https")
             return
         n = int(self.headers.get("Content-Length") or 0)
         body = self.rfile.read(n) if n else b""

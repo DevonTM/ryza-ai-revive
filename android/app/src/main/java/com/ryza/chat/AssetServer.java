@@ -172,8 +172,9 @@ public final class AssetServer extends Thread {
                 off += n;
             }
         }
-        if (!target.startsWith("https://")) {
-            write(out, 400, "application/json", "{\"error\":{\"message\":\"proxy target must be https\"}}");
+        // ponytail: http allowed for local/LAN endpoints; upgrade to SSRF validation if exposed
+        if (!target.startsWith("https://") && !target.startsWith("http://")) {
+            write(out, 400, "application/json", "{\"error\":{\"message\":\"proxy target must be http or https\"}}");
             return;
         }
         try {
@@ -216,8 +217,9 @@ public final class AssetServer extends Thread {
                 }
             }
         }
-        if (!target.startsWith("https://")) {
-            write(out, 400, "application/json", "{\"error\":{\"message\":\"proxy target must be https\"}}");
+        // ponytail: http allowed for local/LAN endpoints; upgrade to SSRF validation if exposed
+        if (!target.startsWith("https://") && !target.startsWith("http://")) {
+            write(out, 400, "application/json", "{\"error\":{\"message\":\"proxy target must be http or https\"}}");
             return;
         }
         try {

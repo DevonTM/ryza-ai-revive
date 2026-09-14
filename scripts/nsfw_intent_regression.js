@@ -161,6 +161,9 @@ function routedFrom(origin) {
 ok(routedFrom('http://127.0.0.1:8765'), 'serve.py loopback routes through /_proxy');
 ok(routedFrom('http://localhost:8765'), 'localhost routes through /_proxy');
 ok(routedFrom('ryza://app'), 'desktop ryza://app routes through /_proxy (1.2.9 fix)');
+const HTTP_TARGET = 'http://192.168.1.50:8000/v1/chat/completions';
+ok(sandbox.Api._localProxy(HTTP_TARGET) === '/_proxy?u=' + encodeURIComponent(HTTP_TARGET),
+   'http endpoint routes through /_proxy');
 sandbox.location = { origin: 'https://elsewhere.test' };
 ok(sandbox.Api._localProxy(PROXY_TARGET) === PROXY_TARGET, 'foreign browser origin calls the endpoint direct');
 sandbox.location = { origin: 'http://127.0.0.1:8765' };
