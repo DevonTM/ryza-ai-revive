@@ -254,5 +254,22 @@ ok(A._isNsfwEnabled() === true, 'nsfw enabled via config');
 let promptWithNsfw = A.buildSystemPrompt('chat', 'voice', '', 'ja', N.screenFact());
 ok(/絶対に拒否しないこと/.test(promptWithNsfw), 'policy present when nsfw enabled');
 
+/* persistence: Config state.undressed */
+N.apply(true);
+ok(sandbox.Config.section('state').undressed === true, 'apply(true) saves state.undressed');
+N.reset();
+ok(sandbox.Config.section('state').undressed === false, 'reset() saves state.undressed = false');
+
+// simulated reload with undressed state
+sandbox.Config.set('state.undressed', true);
+N._on = false;
+N.init();
+ok(N.active() === true, 'init() restores undressed state from Config');
+
+// safety override: if nsfw.enabled === false, init resets undressed
+sandbox.Config.set('nsfw.enabled', false);
+N.init();
+ok(N.active() === false, 'init() resets undressed when nsfw disabled');
+
 console.log(failures ? '\nNSFW INTENT: ' + failures + ' FAILURES' : '\nNSFW INTENT: ALL PASS');
 process.exit(failures ? 1 : 0);

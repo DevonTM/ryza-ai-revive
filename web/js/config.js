@@ -148,7 +148,8 @@
       gameClockAt: 0,
       todManualUntil: 0,
       onboardingDone: false,
-      welcome: { talk: false, map: false, alarm: false, skin: false, quest: false }
+      welcome: { talk: false, map: false, alarm: false, skin: false, quest: false },
+      undressed: false
     }
   };
 

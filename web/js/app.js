@@ -130,6 +130,7 @@
       Daily.load();
       Quests.ensure();
       try { if (window.Memory) Memory.load(); } catch (e) {}
+      try { if (window.Nsfw) Nsfw.init(); } catch (e) {}
 
       App._bindChrome();
       App._bindTalk();

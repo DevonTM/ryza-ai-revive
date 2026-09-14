@@ -12,15 +12,35 @@
   function apply(on) {
     on = !!on;
     Nsfw._on = on;
+    try {
+      if (global.Config && typeof global.Config.set === 'function') {
+        global.Config.set('state.undressed', on);
+      }
+    } catch (e) {}
     var av = global.Avatar;
     if (av && typeof av.setAtlasVariant === 'function') {
       av.setAtlasVariant(on ? VARIANT : 'default');
     }
   }
 
+  function init() {
+    try {
+      if (global.Config && typeof global.Config.section === 'function') {
+        var nsfw = global.Config.section('nsfw');
+        if (nsfw && nsfw.enabled === false) {
+          apply(false);
+          return;
+        }
+        var st = global.Config.section('state');
+        if (st && st.undressed) apply(true);
+      }
+    } catch (e) {}
+  }
+
   var Nsfw = {
     VARIANT: VARIANT,
     _on: false,
+    init: init,
     active: function () { return !!Nsfw._on; },
     apply: apply,
     reset: function () { apply(false); },
@@ -38,4 +58,5 @@
   };
 
   global.Nsfw = Nsfw;
+  init();
 })(typeof window !== 'undefined' ? window : globalThis);
