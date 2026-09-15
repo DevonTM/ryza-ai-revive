@@ -156,6 +156,10 @@ Memory.add('session-b', 'session');
   ok(bodyGlmDef.thinking && bodyGlmDef.thinking.type === 'enabled' &&
      !bodyGlmDef.reasoning_effort,
      'glm + default enables thinking but leaves native intensity');
+  const bodyGlmOff = Api.attachThinking({ model: 'glm-5.3' },
+    { thinking: 'off', thinkingStyle: 'glm' }, null);
+  ok(bodyGlmOff.thinking && bodyGlmOff.thinking.type === 'disabled',
+     'glm + thinking off explicitly disables thinking');
   const bodyQwenDef = Api.attachThinking({ model: 'qwen' },
     { thinking: 'on', thinkingStyle: 'qwen', thinkingEffort: 'default' }, null);
   ok(bodyQwenDef.enable_thinking === true && bodyQwenDef.thinking_budget == null,
@@ -169,6 +173,21 @@ Memory.add('session-b', 'session');
      metaLimit.efforts[0] === 'max',
      'parses limit.context + reasoning_options when a URL actually sends them');
   ok(Api.estTokens('あいう') >= 3, 'CJK token estimate is at least char count-ish');
+
+  /* --- think stripping & tagged reply sanity --- */
+  ok(Api.stripThink('<think>plan</think>こんにちは') === 'こんにちは', 'stripThink pairs');
+  ok(Api.stripThink('<think>a</think>hello <think>b</think>world') === 'hello world', 'stripThink multiple');
+  ok(Api.stripThink('hello<think>unterminated...') === 'hello', 'stripThink unterminated');
+  ok(Api.stripThink('```\n<reasoning>r</reasoning>line\n```') === 'line', 'stripThink fences & reasoning');
+
+  const rep1 = Api.parseTaggedReply('<think>reasoning\nstep</think>[emotion:happy]よろしく！');
+  ok(rep1.emotion === 'happy' && rep1.text === 'よろしく！', 'parseTaggedReply think before tag');
+
+  const rep2 = Api.parseTaggedReply('[emotion:crying]<think>internal</think>えーん');
+  ok(rep2.emotion === 'crying' && rep2.text === 'えーん', 'parseTaggedReply think after tag');
+
+  const rep3 = Api.parseTaggedReply('[emotion:angry]<think>monologue without end');
+  ok(rep3.emotion === 'angry' && rep3.text === '', 'parseTaggedReply unterminated think');
 
   const sys = Api.buildSystemPrompt('chat', 'voice', '', 'ja', 'いまの画面：普段の服を着ている。');
   const memLine = '## 長期記憶（下ほど新しい。事実だけ参照）\n- old fact';

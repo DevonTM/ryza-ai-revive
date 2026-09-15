@@ -339,12 +339,19 @@
     return hit ? s : null;
   }
 
+  function stripThink(text) {
+    var c = String(text || '').replace(/^\uFEFF/, '').trim();
+    c = c.replace(/^```[\w-]*\s*\n?/, '').replace(/\n```\s*$/, '').trim();
+    c = c.replace(/<think\b[^>]*>[\s\S]*?<\/think>\s*/gi, '');
+    c = c.replace(/<reasoning\b[^>]*>[\s\S]*?<\/reasoning>\s*/gi, '');
+    c = c.replace(/<think\b[\s\S]*$/i, '');
+    c = c.replace(/<reasoning\b[\s\S]*$/i, '');
+    return c.trim();
+  }
+
   function parseTaggedReply(text) {
     var dest = { emotion: null, attitude: null, nsfw: null, stage: null, tod: null, advance: null };
-    var body = String(text || '').replace(/^\uFEFF/, '').trim();
-    body = body.replace(/^```[\w-]*\s*\n?/, '').replace(/\n```\s*$/, '').trim();
-    body = body.replace(/^<think\b[^>]*>[\s\S]*?<\/think>\s*/i, '');
-    body = body.replace(/^<reasoning\b[^>]*>[\s\S]*?<\/reasoning>\s*/i, '');
+    var body = stripThink(text);
     var n = 0;
     while (n++ < 3 && body.charAt(0) === '[') {
       var end = body.indexOf(']');
@@ -354,6 +361,7 @@
       parseTagFields(tag, dest);
       body = body.slice(end + 1).replace(/^\s+/, '');
     }
+    body = stripThink(body);
     var ex = extractState(body);
     return {
       emotion: dest.emotion, attitude: dest.attitude, nsfw: dest.nsfw,
@@ -994,6 +1002,10 @@
       return body;
     }
     if (style === 'glm') {
+      if (wanted === 'off' || normalizeEffort(mapped) === 'off') {
+        body.thinking = { type: 'disabled' };
+        return body;
+      }
       body.thinking = { type: 'enabled' };
       if (mapped) body.reasoning_effort = mapped;
       return body;
@@ -1018,6 +1030,7 @@
     MODE_TTS: MODE_TTS,
     MODE_PLAY_FX: MODE_PLAY_FX,
     parseTaggedReply: parseTaggedReply,
+    stripThink: stripThink,
     speechText: speechText,
     buildSystemPrompt: buildSystemPrompt,
     screenTagLine: screenTagLine,
@@ -1102,27 +1115,7 @@
       }, _modelMeta && _modelMeta.id === llm.model ? _modelMeta : null);
       return request(localProxy(upstreamUrl(llm.baseUrl, '/chat/completions')),
                      body, llm.apiKey, 60000).then(function (j) {
-        var c = choiceText(j);
-        var raw = c;
-        c = String(c || '').replace(/^\uFEFF/, '').trim();
-        c = c.replace(/^```[\w-]*\s*\n?/, '').replace(/\n```\s*$/, '').trim();
-        c = c.replace(/<think\b[^>]*>[\s\S]*?<\/think>\s*/gi, '');
-        c = c.replace(/<reasoning\b[^>]*>[\s\S]*?<\/reasoning>\s*/gi, '');
-        c = c.replace(/<think\b[\s\S]*$/i, '');
-        c = c.replace(/<reasoning\b[\s\S]*$/i, '');
-        c = c.trim();
-        if (!c && raw) {
-          var lines = raw.split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
-          c = lines[lines.length - 1] || raw;
-        }
-        if (!c) {
-          var m = j && j.choices && j.choices[0] && j.choices[0].message;
-          var r = m && (m.reasoning_content || m.reasoning);
-          if (r) {
-            var rlines = String(r).split(/\r?\n/).map(function (l) { return l.trim(); }).filter(Boolean);
-            c = rlines[rlines.length - 1] || '';
-          }
-        }
+        var c = stripThink(choiceText(j));
         if (!c) throw new Error('EMPTY_TRANSLATION');
         return c;
       }).catch(function (e) {
