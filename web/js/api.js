@@ -228,7 +228,7 @@
       L.push('tod: 時を進めるなら mor|aft|eve|ngt か +N時間。');
     }
     /* ponytail: single *...* prompt rule; upgrade to parser-level structural tags if model drift persists */
-    L.push('動作・情景は *…* で囲む（**…** や （…） は使わない）。セリフ本文は *…* で囲まない。');
+    L.push('動作・情景は必要なときだけ *…* に1つ、三人称・主語なしで書く（例：*そっと腰を下ろす*。一人称で書かない。**や（）は使わない。毎ターン書く必要はない）。セリフ本文は *…* で囲まない。');
     if (hasRpg) {
       L.push('荷物・金・経験・クエスト・記憶が動いたときだけ末尾に <state>：');
       L.push('<state>{"stamina_delta":-2,"exp_delta":10,"money_delta":50,"inventory_added":[{"id":"emeralia","count":1}],"quest":{"step_add":1}}</state>');
