@@ -204,7 +204,7 @@ if (!gotLock) {
       app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });
     } catch (e) {
       const { dialog } = require('electron');
-      dialog.showErrorBox('Ryza Chat', '启动失败：' + (e && e.message || e));
+      dialog.showErrorBox('RyzaChat', 'Startup failed: ' + (e && e.message || e));
       app.quit();
     }
   });
