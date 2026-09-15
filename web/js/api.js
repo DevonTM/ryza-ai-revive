@@ -204,7 +204,7 @@
     if (!outLang || outLang === 'ja') {
       L.push('日本語で話すこと。');
     } else {
-      L.push('セリフ本文は必ず「' + langName(outLang) + '」で書くこと（ライザらしい元気な口調を' + langName(outLang) + 'でも維持）。');
+      L.push('セリフ本文も *…* の中の動作・情景も、必ず「' + langName(outLang) + '」で書くこと（ライザらしい元気な口調を' + langName(outLang) + 'でも維持）。');
       L.push('地名や人名は' + langName(outLang) + '表記を基本に、必要なら日本語を併記してよい。');
       L.push('先頭のタグ行と <state> は英キーのまま。');
     }
