@@ -1230,8 +1230,10 @@
       var prep = (ttsL !== replyL && Api.translate)
         ? Api.translate(text, ttsL) : Promise.resolve(text);
       prep.then(function (speakText) {
+        var cleanText = (Api && Api.speechText) ? Api.speechText(speakText) : speakText;
+        if (!cleanText) return null;
         /* mode selects the per-mode TTS voice direction (ASMR whisper…) */
-        return Api.speak(speakText, ttsL, st.mode);
+        return Api.speak(cleanText, ttsL, st.mode);
       }).then(function (url) {
         /* Talking starts when the audio actually exists — before that the
            mouth sat closed (RMS target 0) for the whole TTS latency, and a

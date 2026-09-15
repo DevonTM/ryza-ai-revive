@@ -361,6 +361,21 @@
     };
   }
 
+  /* Strip actions / stage directions for TTS so they aren't vocalized.
+     Replaces internal action enclosures with a pause token ('…').
+     Trims boundary pause tokens and collapses punctuation runs. */
+  function speechText(text) {
+    var s = String(text || '');
+    /* ponytail: regex strip of *...*, **...**, and full/half parens; upgrade to tokenizer if nested markdown needed */
+    s = s.replace(/\*{1,2}[^*\r\n]+?\*{1,2}/g, '…');
+    s = s.replace(/（[^）\r\n]*?）|\([^)\r\n]*?\)/g, '…');
+    s = s.replace(/[…\s]+/g, function (m) {
+      return m.indexOf('…') !== -1 ? ' … ' : ' ';
+    });
+    s = s.replace(/([、，,])\s*…/g, '…').replace(/…\s*([、，,])/g, '…');
+    return s.replace(/^[\s…、，,]+|[\s…、，,]+$/g, '').trim();
+  }
+
   function upstreamUrl(baseUrl, path) {
     return String(baseUrl || '').replace(/\/+$/, '') + path;
   }
@@ -1003,6 +1018,7 @@
     MODE_TTS: MODE_TTS,
     MODE_PLAY_FX: MODE_PLAY_FX,
     parseTaggedReply: parseTaggedReply,
+    speechText: speechText,
     buildSystemPrompt: buildSystemPrompt,
     screenTagLine: screenTagLine,
     withTurnCue: withTurnCue,

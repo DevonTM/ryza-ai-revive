@@ -295,6 +295,22 @@ for (const f of ['util.js', 'config.js', 'i18n.js', 'api.js', 'memory.js',
       noKeyErr = err.message;
     }
     ok(noKeyErr === 'NO_KEY', 'translate rejects with NO_KEY when apiKey missing');
+
+    /* Api.speechText TTS action stripper */
+    ok(A.speechText('*そっと腰を下ろす* ねえ、聞いて！') === 'ねえ、聞いて！',
+       'speechText strips leading *...* action');
+    ok(A.speechText('ねえ、*椅子に座りながら* 聞いて！') === 'ねえ… 聞いて！',
+       'speechText replaces mid-sentence *...* action with pause');
+    ok(A.speechText('あはは！*手を振る*') === 'あはは！',
+       'speechText strips trailing *...* action');
+    ok(A.speechText('**座る** あたし、ライザ！') === 'あたし、ライザ！',
+       'speechText strips **...** action');
+    ok(A.speechText('（座る）あたしライザだよ！') === 'あたしライザだよ！',
+       'speechText strips full-width parentheses action');
+    ok(A.speechText('(smiling) Welcome back!') === 'Welcome back!',
+       'speechText strips half-width parentheses action');
+    ok(A.speechText('*手を振る*') === '',
+       'speechText returns empty string when text is action-only');
   } catch (e) {
     bad('runtime: ' + (e && e.stack || e));
   }
