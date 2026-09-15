@@ -1165,7 +1165,7 @@
   };
 
   var I18n = {
-    lang: 'zh',
+    lang: 'en',
     LANG_NAMES: LANG_NAMES,
     LANGS: [
       { id: 'zh', label: '简体中文' },
