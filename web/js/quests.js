@@ -241,7 +241,8 @@
       Game.addExp(reward.exp);
       Game.addMoney(reward.money);
       Game.remember(TF('mem.cleared', '「{title}」をクリア！ +{exp}EXP / +{money}G',
-        { title: Quests.titleOf(q), exp: reward.exp, money: reward.money }));
+        { title: Quests.titleOf(q), exp: reward.exp, money: reward.money }),
+        'mem.cleared', { title: Quests.titleOf(q), exp: reward.exp, money: reward.money });
       var log = Game.s.flags.quest_log || [];
       log.push({ no: q.no, type: q.type, title: q.title, at: Date.now() });
       if (log.length > 40) log = log.slice(-40);

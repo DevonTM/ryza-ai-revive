@@ -600,7 +600,7 @@
       }));
       var npcs = World.npcsAt(stageId, st.day || 1);
       var names = Game.meetCharas(npcs, st.day);
-      if (names.length) Game.remember(names.join('、') + ' と出会った。');
+      if (names.length) Game.remember(names.join('、') + ' と出会った。', 'mem.met', { names: names.join('、') });
       Quests.progressEvent('explore');
       App.showView('talk');
     },
@@ -613,7 +613,7 @@
       Config.set('state.tod', tod);
       if (prev === 'ngt' && tod === 'mor' && s.stage === HOME_STAGE) {
         Game.refill();
-        Game.remember('安全なおうちでぐっすり眠った。');
+        Game.remember('安全なおうちでぐっすり眠った。', 'mem.sleep');
         App.toast(I18n.t('stamina.slept'));
       }
       App._loadSceneFor(s.stage, tod);
@@ -703,7 +703,7 @@
       }
       if (fromTod === 'ngt' && nextTod === 'mor' && dest === HOME_STAGE) {
         Game.refill();
-        Game.remember('安全なおうちでぐっすり眠った。');
+        Game.remember('安全なおうちでぐっすり眠った。', 'mem.sleep');
         App.toast(I18n.t('stamina.slept'));
       }
       if (nextTod !== fromTod) Config.set('state.tod', nextTod);
@@ -878,7 +878,7 @@
       App._loadSceneFor(HOME_STAGE, tod);
       Sound.setPlace(HOME_STAGE, tod, World.backgroundFor(HOME_STAGE));
       Game.refill();
-      Game.remember('安全なおうちでぐっすり眠った。');
+      Game.remember('安全なおうちでぐっすり眠った。', 'mem.sleep');
       document.getElementById('overlay-faint').classList.add('hidden');
       App.showView('talk');
       App.toast(I18n.t('stamina.slept'));
@@ -886,7 +886,7 @@
     },
 
     _onSailed: function () {
-      Game.remember('船でクーケン島を出航した！');
+      Game.remember('船でクーケン島を出航した！', 'mem.sail');
       App.toast(I18n.t('toast.sailed'));
       App.showView('world');
       App.renderWorld();
@@ -945,7 +945,7 @@
       }
       mems.forEach(function (m) {
         var d = document.createElement('div');
-        d.className = 'st-mem'; d.textContent = m.text;
+        d.className = 'st-mem'; d.textContent = Game.textOfMemory ? Game.textOfMemory(m) : m.text;
         root.appendChild(d);
       });
     },

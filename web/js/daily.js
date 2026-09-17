@@ -97,7 +97,9 @@
       Daily.s.lastDate = todayStr();
       if (Daily.s.claimedDays.indexOf(idx) === -1) Daily.s.claimedDays.push(idx);
       Daily.save();
-      Game.remember('連続ログイン ' + Daily.streak() + ' 日目：' + msgs.join('、'));
+      var streak = Daily.streak();
+      var joined = msgs.join('、');
+      Game.remember('連続ログイン ' + streak + ' 日目：' + joined, 'mem.daily', { day: streak, msgs: joined });
       if (window.Sound) Sound.se('quest_clear');
       if (window.Fx) Fx.burstConfetti();
       return { ok: true, day: idx + 1, text: msgs.join('、') };

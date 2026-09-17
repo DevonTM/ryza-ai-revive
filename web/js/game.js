@@ -227,8 +227,8 @@
       if (after > before) {
         /* cap grows with level: give the new headroom (official feels the same) */
         Game.s.stamina = Util.clamp(Game.s.stamina + 10 * (after - before), 0, Game.max());
-        Game.remember(I18n.tf ? I18n.tf('mem.lv', 'Lv{lv} reached!', { lv: after })
-                              : 'Lv' + after + ' reached!');
+        Game.remember((I18n.tf ? I18n.tf('mem.lv', 'Lv{lv} reached!', { lv: after })
+                              : 'Lv' + after + ' reached!'), 'mem.lv', { lv: after });
       }
       Game.save();
       Game.emit('exp');
@@ -318,13 +318,21 @@
       if (added.length) { Game.save(); Game.emit('met'); }
       return added;
     },
-    remember: function (line) {
+    /* ponytail: args store resolved strings at write time; upgrade to entity IDs if mid-session language switching requires deep argument re-localization */
+    remember: function (line, k, args) {
       line = String(line || '').trim();
       if (!line) return;
-      Game.s.memory.push({ at: Date.now(), text: line.slice(0, 120) });
+      var entry = { at: Date.now(), text: line.slice(0, 120) };
+      if (k) { entry.k = k; entry.a = args || null; }
+      Game.s.memory.push(entry);
       if (Game.s.memory.length > 80) Game.s.memory = Game.s.memory.slice(-80);
       Game.save();
       Game.emit('memory');
+    },
+    textOfMemory: function (m) {
+      if (!m) return '';
+      if (m.k && window.I18n && I18n.tf) return I18n.tf(m.k, m.text, m.a);
+      return m.text || '';
     },
 
     /* ------------------------------------------------------- flag helpers */
@@ -434,7 +442,12 @@
       Game.save();
       Game.emit('reset');
     },
-    itemName: itemName
+    itemName: itemName,
+    textOfMemory: function (m) {
+      if (!m) return '';
+      if (m.k && window.I18n && I18n.tf) return I18n.tf(m.k, m.text, m.a);
+      return m.text || '';
+    }
   };
 
   global.Game = Game;
