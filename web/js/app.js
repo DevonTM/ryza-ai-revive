@@ -27,6 +27,7 @@
     _inTutorial: false,
     _lastText: '',
     _invBag: 'you',
+    _voiceGen: 0,
 
     /* ------------------------------------------------------------- utils */
     toast: function (msg, isErr) {
@@ -1203,7 +1204,7 @@
             content: Api.formatHistoryReply(reply.text)
           });
           App.typeBubble(reply.text, function () {
-            App.speakThen(reply.text, reply.emotion);
+            App.speakThen(reply.text, reply.emotion, reply.actSeconds);
           });
 
           /* Talk-quests advance once per turn — if the LLM already reported
@@ -1222,7 +1223,7 @@
         });
     },
 
-    speakThen: function (text, emotion) {
+    speakThen: function (text, emotion, actSeconds) {
       var st = Config.section('state');
       var app = Config.section('app');
       if (!app.voice || st.style === 'text' || Config.section('tts').mode === 'off') return;
@@ -1232,18 +1233,45 @@
       var ttsL = (window.Langs && Langs.tts()) || replyL;
       var prep = (ttsL !== replyL && Api.translate)
         ? Api.translate(text, ttsL) : Promise.resolve(text);
+      var gen = ++App._voiceGen;
       prep.then(function (speakText) {
-        var cleanText = (Api && Api.speechText) ? Api.speechText(speakText) : speakText;
-        if (!cleanText) return null;
-        /* mode selects the per-mode TTS voice direction (ASMR whisper…) */
-        return Api.speak(cleanText, ttsL, st.mode);
-      }).then(function (url) {
-        /* Talking starts when the audio actually exists — before that the
-           mouth sat closed (RMS target 0) for the whole TTS latency, and a
-           failed synth left _talking stuck true forever. */
-        if (!url) return;
-        App.playUrl(url, Api.MODE_PLAY_FX[st.mode] || null);
+        if (gen !== App._voiceGen) return;
+        var segs = (Api && Api.speechSegments) ? Api.speechSegments(speakText) : [];
+        if (!segs.length) {
+          var clean = (Api && Api.speechText) ? Api.speechText(speakText) : speakText;
+          if (clean) segs = [{ type: 'say', text: clean }];
+        }
+        if (!segs.length) return null;
+
+        var queueItems = [];
+        for (var i = 0; i < segs.length; i++) {
+          var s = segs[i];
+          if (s.type === 'say') {
+            queueItems.push({ type: 'say', text: s.text });
+          } else if (s.type === 'pause') {
+            var ms = (Api && Api.pauseMsFor) ? Api.pauseMsFor(actSeconds, s.chars) : 800;
+            queueItems.push({ type: 'pause', ms: ms });
+          }
+        }
+
+        // ponytail: sequential synth without prefetch; upgrade to prefetch-next if inter-segment gap feels laggy
+        var sayItems = queueItems.filter(function (it) { return it.type === 'say'; });
+        return sayItems.reduce(function (p, item) {
+          return p.then(function () {
+            if (gen !== App._voiceGen) return null;
+            return Api.speak(item.text, ttsL, st.mode).then(function (url) {
+              item.url = url;
+            });
+          });
+        }, Promise.resolve()).then(function () {
+          if (gen !== App._voiceGen) {
+            queueItems.forEach(function (it) { if (it.url) URL.revokeObjectURL(it.url); });
+            return;
+          }
+          App.playQueue(queueItems, Api.MODE_PLAY_FX[st.mode] || null, gen);
+        });
       }).catch(function (e) {
+        if (gen !== App._voiceGen) return;
         var msg = e && e.message ? e.message : String(e);
         App.toast(msg === 'NO_KEY' ? I18n.t('toast.needKey')
               : msg === 'NO_MODEL' ? I18n.t('toast.needModel')
@@ -1253,10 +1281,45 @@
       });
     },
 
+    playQueue: function (items, fx, gen) {
+      if (!items || !items.length || gen !== App._voiceGen) return;
+      var idx = 0;
+      App._bubbleKeep();
+
+      function step() {
+        if (gen !== App._voiceGen) {
+          for (var j = idx; j < items.length; j++) {
+            if (items[j].url) URL.revokeObjectURL(items[j].url);
+          }
+          return;
+        }
+        if (idx >= items.length) {
+          Avatar.setTalking(false);
+          App._bubbleHold(1600);
+          return;
+        }
+        var cur = items[idx++];
+        if (cur.type === 'pause') {
+          Avatar.setTalking(false);
+          setTimeout(function () {
+            if (gen === App._voiceGen) step();
+          }, cur.ms || 600);
+          return;
+        }
+        if (cur.type === 'say') {
+          if (!cur.url) { step(); return; }
+          App.playUrl(cur.url, fx, function () {
+            step();
+          });
+        }
+      }
+      step();
+    },
+
     /* fx: optional { rate, gain } per-mode playback shaping (see
        Api.MODE_PLAY_FX — ASMR slows and softens even on endpoints that
        ignore voice instructions). */
-    playUrl: function (url, fx) {
+    playUrl: function (url, fx, onDone) {
       App._ensureVoiceGraph();
       if (App._voiceCtx && App._voiceCtx.state === 'suspended') {
         App._voiceCtx.resume().catch(function () {});
@@ -1271,15 +1334,20 @@
         a.playbackRate = 1;
         Avatar.setTalking(false);
         URL.revokeObjectURL(url);
-        App._bubbleHold(1600);   /* done talking → bubble steps aside */
+        if (onDone) onDone();
+        else App._bubbleHold(1600);   /* done talking → bubble steps aside */
       };
       Avatar.setTalking(true);
       App._bubbleKeep();         /* stay put while she talks */
-      a.play().catch(function () { Avatar.setTalking(false); });
+      a.play().catch(function () {
+        Avatar.setTalking(false);
+        if (onDone) onDone();
+      });
       App.buzz();
     },
 
     _pauseVoice: function () {
+      App._voiceGen++;
       if (App.audio) { try { App.audio.pause(); } catch (e) {} }
       if (Avatar && Avatar.setTalking) Avatar.setTalking(false);
     },

@@ -311,6 +311,33 @@ for (const f of ['util.js', 'config.js', 'i18n.js', 'api.js', 'memory.js',
        'speechText strips half-width parentheses action');
     ok(A.speechText('*手を振る*') === '',
        'speechText returns empty string when text is action-only');
+
+    /* Api.speechSegments & pauseMsFor */
+    const segsMid = A.speechSegments('ねえ、*椅子に座りながら* 聞いて！');
+    ok(segsMid.length === 3 && segsMid[0].text === 'ねえ、' && segsMid[1].type === 'pause' && segsMid[1].chars === 8 && segsMid[2].text === '聞いて！',
+       'speechSegments parses mid-sentence action into say and pause segments');
+    const segsLead = A.speechSegments('*そっと腰を下ろす* ねえ、聞いて！');
+    ok(segsLead.length === 1 && segsLead[0].text === 'ねえ、聞いて！',
+       'speechSegments drops leading pause');
+    const segsTrail = A.speechSegments('あはは！*手を振る*');
+    ok(segsTrail.length === 1 && segsTrail[0].text === 'あはは！',
+       'speechSegments drops trailing pause');
+    const segsEmpty = A.speechSegments('*手を振る*');
+    ok(segsEmpty.length === 0,
+       'speechSegments returns empty array for action-only string');
+
+    ok(A.pauseMsFor(3, 10) === 3000, 'pauseMsFor prioritizes actSeconds');
+    ok(A.pauseMsFor(null, 1) === 400, 'pauseMsFor clamps fallback min at 400ms');
+    ok(A.pauseMsFor(null, 20) === 900, 'pauseMsFor computes char-length heuristic');
+    ok(A.pauseMsFor(null, 100) === 2500, 'pauseMsFor clamps fallback max at 2500ms');
+
+    /* parseTaggedReply act tag parsing */
+    const repAct = A.parseTaggedReply('[act:3.5][emotion:happy] やあ！');
+    ok(repAct.actSeconds === 3.5 && repAct.emotion === 'happy' && repAct.text === 'やあ！',
+       'parseTaggedReply extracts actSeconds tag');
+    const repNoAct = A.parseTaggedReply('[emotion:happy] やあ！');
+    ok(repNoAct.actSeconds === null && repNoAct.emotion === 'happy',
+       'parseTaggedReply defaults actSeconds to null when omitted');
   } catch (e) {
     bad('runtime: ' + (e && e.stack || e));
   }

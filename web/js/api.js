@@ -228,7 +228,7 @@
       L.push('tod: 時を進めるなら mor|aft|eve|ngt か +N時間。');
     }
     /* ponytail: single *...* prompt rule; upgrade to parser-level structural tags if model drift persists */
-    L.push('動作・情景は必要なときだけ *…* に1つ、三人称・主語なしで書く（例：*そっと腰を下ろす*。一人称で書かない。**や（）は使わない。毎ターン書く必要はない）。セリフ本文は *…* で囲まない。');
+    L.push('動作・情景は必要なときだけ *…* に1つ、三人称・主語なしで書く（例：*そっと腰を下ろす*。一人称で書かない。**や（）は使わない。毎ターン書く必要はない）。セリフ本文は *…* で囲まない。動作に実時間がかかる場合はタグに act:秒数（例：[act:3]、1〜8秒）を付与する。');
     if (hasRpg) {
       L.push('荷物・金・経験・クエスト・記憶が動いたときだけ末尾に <state>：');
       L.push('<state>{"stamina_delta":-2,"exp_delta":10,"money_delta":50,"inventory_added":[{"id":"emeralia","count":1}],"quest":{"step_add":1}}</state>');
@@ -321,12 +321,15 @@
       } else if (k === 'time_advance') {
         var n = parseInt(v, 10);
         if (!isNaN(n)) dest.advance = n;
+      } else if (k === 'act') {
+        var a = parseFloat(v);
+        if (!isNaN(a) && a > 0) dest.actSeconds = Math.min(15, a);
       }
     });
   }
 
   function isMachineTag(tag) {
-    return /(?:^|[|｜,\s])(?:emotion|attitude|undress|nsfw|stage|place|tod|sleep|time_advance)\s*[:：]/i.test('|' + tag);
+    return /(?:^|[|｜,\s])(?:emotion|attitude|undress|nsfw|stage|place|tod|sleep|time_advance|act)\s*[:：]/i.test('|' + tag);
   }
 
   function attachSceneTags(state, dest) {
@@ -350,7 +353,7 @@
   }
 
   function parseTaggedReply(text) {
-    var dest = { emotion: null, attitude: null, nsfw: null, stage: null, tod: null, advance: null };
+    var dest = { emotion: null, attitude: null, nsfw: null, stage: null, tod: null, advance: null, actSeconds: null };
     var body = stripThink(text);
     var n = 0;
     while (n++ < 3 && body.charAt(0) === '[') {
@@ -365,6 +368,7 @@
     var ex = extractState(body);
     return {
       emotion: dest.emotion, attitude: dest.attitude, nsfw: dest.nsfw,
+      actSeconds: dest.actSeconds,
       text: ex.text, state: attachSceneTags(ex.state, dest)
     };
   }
@@ -382,6 +386,49 @@
     });
     s = s.replace(/([、，,])\s*…/g, '…').replace(/…\s*([、，,])/g, '…');
     return s.replace(/^[\s…、，,]+|[\s…、，,]+$/g, '').trim();
+  }
+
+  /* Split text into say/pause segments for timed TTS playback.
+     Strips enclosing actions (*...*, **...**, parens) and yields pause segments
+     with action char count for silence duration calculation. */
+  function speechSegments(text) {
+    var raw = String(text || '');
+    var re = /\*{1,2}[^*\r\n]+?\*{1,2}|（[^）\r\n]*?）|\([^)\r\n]*?\)/g;
+    var segs = [];
+    var last = 0;
+    var m;
+    while ((m = re.exec(raw)) !== null) {
+      if (m.index > last) {
+        var prev = raw.slice(last, m.index).replace(/^[\s…、，,]+|[\s…]+$/g, '').trim();
+        if (prev) segs.push({ type: 'say', text: prev });
+      }
+      var inner = m[0].replace(/^(\*{1,2}|[（(])/, '').replace(/(\*{1,2}|[）)])$/, '').trim();
+      if (segs.length > 0 && segs[segs.length - 1].type === 'say') {
+        segs.push({ type: 'pause', chars: inner.length });
+      } else if (segs.length > 0 && segs[segs.length - 1].type === 'pause') {
+        segs[segs.length - 1].chars += inner.length;
+      }
+      last = m.index + m[0].length;
+    }
+    if (last < raw.length) {
+      var tail = raw.slice(last).replace(/^[\s…、，,]+|[\s…]+$/g, '').trim();
+      if (tail) segs.push({ type: 'say', text: tail });
+    }
+    while (segs.length && segs[segs.length - 1].type === 'pause') {
+      segs.pop();
+    }
+    return segs;
+  }
+
+  /* Resolve silent pause duration (ms) for an action gap.
+     actSeconds from LLM takes precedence; fallback is clamped character heuristic. */
+  function pauseMsFor(actSeconds, chars) {
+    if (typeof actSeconds === 'number' && actSeconds > 0 && isFinite(actSeconds)) {
+      return Math.round(actSeconds * 1000);
+    }
+    var c = typeof chars === 'number' && chars > 0 ? chars : 0;
+    // ponytail: heuristic ~45ms/char, clamped 400ms..2500ms; upgrade to provider-aligned SSML if TTS supports inline breaks
+    return Math.max(400, Math.min(2500, Math.round(c * 45)));
   }
 
   function upstreamUrl(baseUrl, path) {
@@ -1033,6 +1080,8 @@
     parseTaggedReply: parseTaggedReply,
     stripThink: stripThink,
     speechText: speechText,
+    speechSegments: speechSegments,
+    pauseMsFor: pauseMsFor,
     buildSystemPrompt: buildSystemPrompt,
     screenTagLine: screenTagLine,
     withTurnCue: withTurnCue,
