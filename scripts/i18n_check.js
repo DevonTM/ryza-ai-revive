@@ -67,6 +67,11 @@ if (parsedContent.ja && parsedContent.zh && parsedContent.en) {
   const cMissingEn = cJaKeys.filter((k) => !(k in parsedContent.en));
   ok(cMissingZh.length === 0, 'All ja content keys exist in zh' + (cMissingZh.length ? ' (missing: ' + cMissingZh.join(', ') + ')' : ''));
   ok(cMissingEn.length === 0, 'All ja content keys exist in en' + (cMissingEn.length ? ' (missing: ' + cMissingEn.join(', ') + ')' : ''));
+
+  if (parsedContent.id) {
+    const cMissingId = cJaKeys.filter((k) => !(k in parsedContent.id));
+    ok(cMissingId.length === 0, 'All ja content keys exist in id' + (cMissingId.length ? ' (missing: ' + cMissingId.join(', ') + ')' : ''));
+  }
 }
 
 if (failures === 0) {
