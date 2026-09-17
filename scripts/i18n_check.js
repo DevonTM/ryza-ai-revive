@@ -45,17 +45,20 @@ ok(missingInJa.length === 0, 'All zh keys exist in ja' + (missingInJa.length ? '
 ok(missingInEn.length === 0, 'All zh keys exist in en' + (missingInEn.length ? ' (missing: ' + missingInEn.join(', ') + ')' : ''));
 ok(missingInZh.length === 0, 'All ja keys exist in zh' + (missingInZh.length ? ' (missing: ' + missingInZh.join(', ') + ')' : ''));
 
-console.log('--- Checking English UI for CJK leaks ---');
+console.log('--- Checking non-CJK UI dictionaries for CJK leaks ---');
 const cjkRegex = /[\u4e00-\u9fff\u3040-\u30ff]/;
-let cjkLeaks = [];
-for (const k of Object.keys(parsedT.en || {})) {
-  if (k.startsWith('lang.')) continue; /* native endonyms intentionally allowed */
-  const val = String(parsedT.en[k]);
-  if (cjkRegex.test(val)) {
-    cjkLeaks.push(k + ': ' + val);
+['en', 'id', 'hi', 'pt-br'].forEach((lang) => {
+  let cjkLeaks = [];
+  const dict = parsedT[lang] || {};
+  for (const k of Object.keys(dict)) {
+    if (k.startsWith('lang.')) continue; /* native endonyms intentionally allowed */
+    const val = String(dict[k]);
+    if (cjkRegex.test(val)) {
+      cjkLeaks.push(k + ': ' + val);
+    }
   }
-}
-ok(cjkLeaks.length === 0, 'No CJK characters in T.en' + (cjkLeaks.length ? ' (leaks: ' + cjkLeaks.join('; ') + ')' : ''));
+  ok(cjkLeaks.length === 0, 'No CJK characters in T.' + lang + (cjkLeaks.length ? ' (leaks: ' + cjkLeaks.join('; ') + ')' : ''));
+});
 
 console.log('--- Checking CONTENT dictionary parity ---');
 if (parsedContent.ja && parsedContent.zh && parsedContent.en) {
@@ -73,6 +76,30 @@ if (parsedContent.ja && parsedContent.zh && parsedContent.en) {
     ok(cMissingId.length === 0, 'All ja content keys exist in id' + (cMissingId.length ? ' (missing: ' + cMissingId.join(', ') + ')' : ''));
   }
 }
+
+console.log('--- Checking index.html for unlocalized tooltips ---');
+const html = fs.readFileSync(path.join(ROOT, 'web/index.html'), 'utf8');
+const tagRegex = /<[^>]+>/g;
+let unlocalizedTitles = [];
+let missingTitleKeys = [];
+let match;
+while ((match = tagRegex.exec(html)) !== null) {
+  const tag = match[0];
+  const titleMatch = tag.match(/\btitle="([^"]*)"/);
+  if (titleMatch && cjkRegex.test(titleMatch[1])) {
+    const i18nMatch = tag.match(/\bdata-i18n-title="([^"]+)"/);
+    if (!i18nMatch) {
+      unlocalizedTitles.push(tag);
+    } else {
+      const key = i18nMatch[1];
+      if (!(key in (parsedT.en || {})) && !(key in (parsedT.zh || {}))) {
+        missingTitleKeys.push(key);
+      }
+    }
+  }
+}
+ok(unlocalizedTitles.length === 0, 'All CJK titles carry data-i18n-title' + (unlocalizedTitles.length ? ' (' + unlocalizedTitles.join(', ') + ')' : ''));
+ok(missingTitleKeys.length === 0, 'All data-i18n-title keys exist in dictionary' + (missingTitleKeys.length ? ' (' + missingTitleKeys.join(', ') + ')' : ''));
 
 if (failures === 0) {
   console.log('\nI18N CHECK: ALL PASS (' + zhKeys.length + ' UI keys verified across zh/ja/en)');
