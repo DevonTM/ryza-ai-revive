@@ -239,7 +239,45 @@
       'toast.cloning': '正在向百炼注册复刻音色…', 'toast.cloningFish': '正在向 Fish Audio 注册复刻音色…',
       'toast.cloneOk': '复刻完成，音色 ID 已填入',
       'toast.cloneFail': '复刻失败：',
-      'drawer.foot': '离线重建版 · 不连接官方服务器', 'nav.menu': '菜单'
+      'drawer.foot': '离线重建版 · 不连接官方服务器', 'nav.menu': '菜单',
+      'toast.indexFail': '素材索引加载失败：',
+      'settings.resetAsk': '恢复所有设置为默认值？',
+      'alarm.everydayHint': '全不选即每天',
+      'alarm.needTime': '请填写时间',
+      'settings.baseUrl.hint': 'OpenAI 兼容地址，以 /v1 结尾；也可放 config/providers.json 自动水合',
+      'settings.modelClone.hint': '克隆通道使用的模型 id（服务端提供，如 MiMo 的声音克隆模型）',
+      'settings.refAudio.hint': '必须是 wav 或 mp3；APK 里的原声是 m4a，需先转码',
+      'settings.modelPreset.hint': '预设音色通道使用的模型 id（服务端提供）',
+      'settings.pasteJson': '粘贴配置 JSON',
+      'toast.importFail': '配置解析失败：',
+      'toast.testing': '测试中…',
+      'toast.fail': '失败：',
+      'toast.synthesizing': '合成中…',
+      'toast.voiceOff': '语音已关闭',
+      'chara.ryzaTitle': '莱莎（角色设定）',
+      'chara.youTitle': '你（玩家设定）',
+      'chara.saveAndBack': '保存并回到对话',
+      'chara.clearHistory': '清空对话记忆',
+      'chara.clearHistoryAsk': '清空当前对话历史？',
+      'toast.cleared': '已清空',
+      'toast.noWebGL': '此浏览器不支持 WebGL，立绘无法显示',
+      'err.loadAsset': '素材加载失败：',
+      'err.loadTimeout': '加载超时：',
+      'err.loadSkin': '皮肤加载失败：',
+      'err.noStage': '没有这个场景：',
+      'err.network': '网络请求失败（跨域或未走本地代理）',
+      'err.timeout': '请求超时',
+      'err.noAudio': '接口未返回音频',
+      'err.qwenNoAudio': 'Qwen TTS 未返回音频',
+      'err.audioHttp': '音频下载失败 HTTP ',
+      'err.noRyzaVoice': '找不到本地莱莎原声（需要 assets/audio/prologue/jp/*.m4a 或 voice/ryza_wav/*.wav）',
+      'err.readRefAudio': '无法读取参考音频：',
+      'err.quota': '积分不足',
+      'win.pin': '窗口置顶', 'win.min': '最小化', 'win.close': '关闭',
+      'skin.name.crf_skn_002_0001': '平时便服',
+      'skin.name.crf_skn_002_0002': '迪维尔的拥抱',
+      'skin.name.crf_skn_002_0003': '最喜爱的便服',
+      'skin.name.crf_skn_002_0004': '百夏礼服'
     },
 
     ja: {
@@ -473,7 +511,45 @@
       'toast.cloning': 'Bailian にクローン音声を登録中…', 'toast.cloningFish': 'Fish Audio にクローン音声を登録中…',
       'toast.cloneOk': '登録完了、voice_id を入力しました',
       'toast.cloneFail': 'クローン作成失敗：',
-      'drawer.foot': 'オフライン再構築版 · 公式サーバー非接続', 'nav.menu': 'メニュー'
+      'drawer.foot': 'オフライン再構築版 · 公式サーバー非接続', 'nav.menu': 'メニュー',
+      'toast.indexFail': '素材インデックス読み込みエラー：',
+      'settings.resetAsk': 'すべての設定を初期値に戻しますか？',
+      'alarm.everydayHint': '未選択で毎日',
+      'alarm.needTime': '時刻を入力してください',
+      'settings.baseUrl.hint': 'OpenAI 互換 URL（/v1 で終わる）。config/providers.json から自動読み込みも可',
+      'settings.modelClone.hint': 'ボイスクローン用モデル ID（サーバー提供、MiMo など）',
+      'settings.refAudio.hint': 'wav または mp3。APK の音源は m4a のため変換が必要',
+      'settings.modelPreset.hint': 'プリセットボイス用モデル ID（サーバー提供）',
+      'settings.pasteJson': '設定 JSON を貼り付けてください',
+      'toast.importFail': '設定の解析に失敗しました：',
+      'toast.testing': 'テスト中…',
+      'toast.fail': '失敗：',
+      'toast.synthesizing': '音声合成中…',
+      'toast.voiceOff': '音声はオフです',
+      'chara.ryzaTitle': 'ライザ（キャラ設定）',
+      'chara.youTitle': 'あなた（プレイヤー設定）',
+      'chara.saveAndBack': '保存して会話に戻る',
+      'chara.clearHistory': '会話履歴を消去',
+      'chara.clearHistoryAsk': '現在の会話履歴を消去しますか？',
+      'toast.cleared': '消去しました',
+      'toast.noWebGL': 'ブラウザが WebGL に非対応のため立ち絵を表示できません',
+      'err.loadAsset': '素材の読み込みに失敗しました：',
+      'err.loadTimeout': '読み込みがタイムアウトしました：',
+      'err.loadSkin': 'スキンの読み込みに失敗しました：',
+      'err.noStage': 'シーンが見つかりません：',
+      'err.network': 'ネットワーク要求に失敗しました（CORS またはローカルプロキシ未設定）',
+      'err.timeout': '要求がタイムアウトしました',
+      'err.noAudio': 'API から音声が返されませんでした',
+      'err.qwenNoAudio': 'Qwen TTS から音声が返されませんでした',
+      'err.audioHttp': '音声ダウンロードに失敗しました HTTP ',
+      'err.noRyzaVoice': 'ライザのローカル音声が見つかりません（assets/audio/prologue/jp/*.m4a または voice/ryza_wav/*.wav が必要）',
+      'err.readRefAudio': '参照音声を読み込めません：',
+      'err.quota': 'クォータ不足',
+      'win.pin': '常に最前面', 'win.min': '最小化', 'win.close': '閉じる',
+      'skin.name.crf_skn_002_0001': '普段着',
+      'skin.name.crf_skn_002_0002': 'ディヴェルの抱擁',
+      'skin.name.crf_skn_002_0003': 'お気に入りの普段着',
+      'skin.name.crf_skn_002_0004': '百夏の礼装'
     },
 
     en: {
@@ -707,7 +783,45 @@
       'toast.cloning': 'Registering cloned voice with Bailian\u2026', 'toast.cloningFish': 'Registering cloned voice with Fish Audio\u2026',
       'toast.cloneOk': 'Cloned voice ready, voice_id filled in',
       'toast.cloneFail': 'Voice clone failed: ',
-      'drawer.foot': 'Offline rebuild · Not connected to official servers', 'nav.menu': 'Menu'
+      'drawer.foot': 'Offline rebuild · Not connected to official servers', 'nav.menu': 'Menu',
+      'toast.indexFail': 'Failed to load asset index: ',
+      'settings.resetAsk': 'Reset all settings to defaults?',
+      'alarm.everydayHint': 'leave all off for everyday',
+      'alarm.needTime': 'Please enter a time',
+      'settings.baseUrl.hint': 'OpenAI-compatible URL ending in /v1; auto-hydrated from config/providers.json',
+      'settings.modelClone.hint': 'Model id for voice cloning channel (provided by server, e.g. MiMo)',
+      'settings.refAudio.hint': 'Must be wav or mp3; bundled APK audio is m4a, transcoding required',
+      'settings.modelPreset.hint': 'Model id for preset voice channel (provided by server)',
+      'settings.pasteJson': 'Paste configuration JSON',
+      'toast.importFail': 'Failed to parse config: ',
+      'toast.testing': 'Testing…',
+      'toast.fail': 'Failed: ',
+      'toast.synthesizing': 'Synthesizing…',
+      'toast.voiceOff': 'Voice is off',
+      'chara.ryzaTitle': 'Ryza (Character settings)',
+      'chara.youTitle': 'You (Player settings)',
+      'chara.saveAndBack': 'Save and return to chat',
+      'chara.clearHistory': 'Clear chat history',
+      'chara.clearHistoryAsk': 'Clear current chat history?',
+      'toast.cleared': 'Cleared',
+      'toast.noWebGL': 'WebGL not supported by this browser; character cannot be displayed',
+      'err.loadAsset': 'Failed to load asset: ',
+      'err.loadTimeout': 'Loading timed out: ',
+      'err.loadSkin': 'Failed to load skin: ',
+      'err.noStage': 'Scene not found: ',
+      'err.network': 'Network request failed (CORS or local proxy missing)',
+      'err.timeout': 'Request timed out',
+      'err.noAudio': 'API did not return audio',
+      'err.qwenNoAudio': 'Qwen TTS did not return audio',
+      'err.audioHttp': 'Audio download failed HTTP ',
+      'err.noRyzaVoice': 'Local Ryza audio not found (requires assets/audio/prologue/jp/*.m4a or voice/ryza_wav/*.wav)',
+      'err.readRefAudio': 'Failed to read reference audio: ',
+      'err.quota': 'Insufficient quota',
+      'win.pin': 'Always on top', 'win.min': 'Minimize', 'win.close': 'Close',
+      'skin.name.crf_skn_002_0001': 'Everyday Outfit',
+      'skin.name.crf_skn_002_0002': "Divel's Embrace",
+      'skin.name.crf_skn_002_0003': 'Favorite Everyday Outfit',
+      'skin.name.crf_skn_002_0004': 'Summer Formal'
     }
   };
 
@@ -774,7 +888,45 @@
     'world.lockedToast': '還沒有船，去不了庫肯島以外（完成主線8「造船出海」）',
     'talk.mapMove': '來到：{name}',
     'quest.side': '支線', 'quest.cleared': '任務完成', 'quest.history': '已完成的委託',
-    'drawer.foot': '離線重建版 · 不連接官方伺服器', 'nav.menu': '選單'
+    'drawer.foot': '離線重建版 · 不連接官方伺服器', 'nav.menu': '選單',
+    'toast.indexFail': '素材索引載入失敗：',
+    'settings.resetAsk': '恢復所有設定為預設值？',
+    'alarm.everydayHint': '全不選即每天',
+    'alarm.needTime': '請填寫時間',
+    'settings.baseUrl.hint': 'OpenAI 相容位址，以 /v1 結尾；亦可放 config/providers.json 自動水合',
+    'settings.modelClone.hint': '複製通道使用的模型 id（伺服器提供，如 MiMo 的聲音複製模型）',
+    'settings.refAudio.hint': '必須是 wav 或 mp3；APK 裡的原聲是 m4a，需先轉碼',
+    'settings.modelPreset.hint': '預設音色通道使用的模型 id（伺服器提供）',
+    'settings.pasteJson': '貼上設定 JSON',
+    'toast.importFail': '設定解析失敗：',
+    'toast.testing': '測試中…',
+    'toast.fail': '失敗：',
+    'toast.synthesizing': '合成中…',
+    'toast.voiceOff': '語音已關閉',
+    'chara.ryzaTitle': '萊莎（角色設定）',
+    'chara.youTitle': '你（玩家設定）',
+    'chara.saveAndBack': '儲存並回到對話',
+    'chara.clearHistory': '清空對話記憶',
+    'chara.clearHistoryAsk': '清空目前對話歷史？',
+    'toast.cleared': '已清空',
+    'toast.noWebGL': '此瀏覽器不支援 WebGL，立繪無法顯示',
+    'err.loadAsset': '素材載入失敗：',
+    'err.loadTimeout': '載入逾時：',
+    'err.loadSkin': '皮膚載入失敗：',
+    'err.noStage': '沒有這個場景：',
+    'err.network': '網路請求失敗（跨域或未走本地代理）',
+    'err.timeout': '請求逾時',
+    'err.noAudio': '介面未返回音訊',
+    'err.qwenNoAudio': 'Qwen TTS 未返回音訊',
+    'err.audioHttp': '音訊下載失敗 HTTP ',
+    'err.noRyzaVoice': '找不到本地萊莎原聲（需要 assets/audio/prologue/jp/*.m4a 或 voice/ryza_wav/*.wav）',
+    'err.readRefAudio': '無法讀取參考音訊：',
+    'err.quota': '額度不足',
+    'win.pin': '視窗置頂', 'win.min': '最小化', 'win.close': '關閉',
+    'skin.name.crf_skn_002_0001': '平時便服',
+    'skin.name.crf_skn_002_0002': '迪維爾的擁抱',
+    'skin.name.crf_skn_002_0003': '最喜愛的便服',
+    'skin.name.crf_skn_002_0004': '百夏禮服'
   });
 
   T.hi = inherit(T.en, {
@@ -894,7 +1046,7 @@
       'mem.cleared': '「{title}」をクリア！ +{exp}EXP / +{money}G', 'mem.lv': 'Lv{lv} reached!',
       'place.area_01': 'クーケン島周辺地域', 'place.area_02': 'クレリア地方', 'place.area_03': 'ネメッド地方',
       'place.area_04': '冥界オーリム', 'place.area_05': '王都周辺地域',
-      'place.field_01_001': 'クーケン島', 'place.stage_01_001_04': 'ライザの家',
+      'place.field_01_001': 'クーケン島', 'place.stage_01_001_04': 'ライザの家', 'place.stage_01_002_01': 'タオの家の前',
       'input.hint': 'なんでも聞いてね', 'input.wake': 'タップしてライザを起こす',
       'qobs.gather': 'いい素材は少し奥まで入らないと採れないみたい。',
       'qobs.craft': '調合は失敗しやすいから、材料は余裕をもって集めとこ。',
@@ -965,7 +1117,8 @@
       'greet.1': '……呀，见到你啦。', 'greet.n': '……今天也，见到你啦。',
       'mem.met': '遇见了{names}。', 'mem.sleep': '在安全的家里睡了个好觉。',
       'mem.cleared': '通关「{title}」！+{exp}经验 / +{money}G', 'mem.lv': '升到 Lv{lv} 了！',
-      'place.area_01': '库肯岛周边地区', 'place.area_02': '克莱莉亚地区', 'place.area_05': '王都周边地区',
+      'place.area_01': '库肯岛周边地区', 'place.area_02': '克莱莉亚地区', 'place.area_03': '内默德地区',
+      'place.area_04': '异界奥里姆', 'place.area_05': '王都周边地区',
       'place.field_01_001': '库肯岛', 'place.stage_01_001_04': '莱莎家', 'place.stage_01_002_01': '塔奥家门前',
       'item.bottle': '回复药（草豆）',
       'input.hint': '和莱莎说点什么…', 'input.wake': '点一下叫醒莱莎',
@@ -1038,7 +1191,8 @@
       'greet.1': '…Hey, there you are.', 'greet.n': '…There you are again today.',
       'mem.met': 'Met {names}.', 'mem.sleep': 'Slept soundly at the safe home.',
       'mem.cleared': 'Cleared "{title}"! +{exp}EXP / +{money}G', 'mem.lv': 'Reached Lv{lv}!',
-      'place.area_01': 'Kurken Island Area', 'place.area_02': 'Cleria region',
+      'place.area_01': 'Kurken Island Area', 'place.area_02': 'Cleria region', 'place.area_03': 'Nemed Region',
+      'place.area_04': 'Underworld Orim', 'place.area_05': 'Royal Capital Area',
       'place.field_01_001': 'Kurken Island', 'place.stage_01_001_04': 'Ryza\u2019s Home',
       'input.hint': 'Say something to Ryza…', 'input.wake': 'Tap to wake Ryza',
       'place.stage_01_002_01': 'In front of Tao\u2019s house',
@@ -1058,29 +1212,40 @@
      (简体化为逐字转换，非再翻译); anything unverified stays Japanese. */
   CONTENT.zh.npc = null;
   var NPC_NAMES = {
-    zh: { ryza: '萊莎', karl: '卡爾', tao: '塔奧', mio: '米奧', moritz: '莫里茨',
-      empel: '安佩爾', lila: '莉拉', romy: '羅密', serri: '賽莉', dennis: '丹尼斯',
-      klaudia: '科洛蒂婭', federica: '菲德麗卡', saverio: '薩維里奧', dian: '迪安',
-      dort: '多爾特', anna: '安娜', volker: '沃爾卡', korou: '古老' },
+    ja: { ryza: 'ライザ', lent: 'レント', klaudia: 'クラウディア', tao: 'タオ', empel: 'アンペル',
+      lila: 'リラ', boos: 'ボオス', moritz: 'モリッツ', karl: 'カール', mio: 'ミオ',
+      samuel: 'サミュエル', kilo: 'キロ', romy: 'ロミィ', patricia: 'パトリシア',
+      clifford: 'クリフォード', serri: 'セリ', volker: 'フォルカー', zephine: 'ゼフィーヌ',
+      dennis: 'デニス', cassandra: 'カサンドラ', kala: 'カラ', alberta: 'アルベルタ',
+      saverio: 'サヴェリオ', anna: 'アンナ', dort: 'ドルト', federica: 'フェデリーカ', dian: 'ディアン', korou: '古老' },
+    zh: { ryza: '萊莎', lent: '蘭托', klaudia: '科洛蒂婭', tao: '塔奧', empel: '安佩爾',
+      lila: '莉拉', boos: '博斯', moritz: '莫里茨', karl: '卡爾', mio: '米奧',
+      samuel: '薩繆爾', kilo: '吉洛', romy: '羅密', patricia: '派翠夏',
+      clifford: '克里佛德', serri: '賽莉', volker: '沃爾卡', zephine: '潔菲娜',
+      dennis: '丹尼斯', cassandra: '卡珊德拉', kala: '卡菈', alberta: '阿爾貝塔',
+      saverio: '薩維里奧', anna: '安娜', dort: '多爾特', federica: '菲德麗卡', dian: '迪安', korou: '古老' },
     en: { ryza: 'Ryza', lent: 'Lent', klaudia: 'Klaudia', tao: 'Tao', empel: 'Empel',
       lila: 'Lila', boos: 'Bos', moritz: 'Moritz', karl: 'Karl', mio: 'Mio',
       samuel: 'Samuel', kilo: 'Kilo', romy: 'Romy', patricia: 'Patricia',
       clifford: 'Clifford', serri: 'Serri', volker: 'Volker', zephine: 'Zephine',
       dennis: 'Dennis', cassandra: 'Cassandra', kala: 'Kala', alberta: 'Alberta',
-      saverio: 'Saverio', anna: 'Anna', dort: 'Dort', federica: 'Federica', dian: 'Dian' }
+      saverio: 'Saverio', anna: 'Anna', dort: 'Dort', federica: 'Federica', dian: 'Dian', korou: 'Elder' }
   };
   /* zh (simplified UI) mirrors the zh-TW official forms, char-converted */
   var NPC_ZH_TW = NPC_NAMES.zh;
   var NPC_ZH_CN = {};
   Object.keys(NPC_ZH_TW).forEach(function (k) {
     NPC_ZH_CN[k] = NPC_ZH_TW[k]
-      .replace(/萊/g, '莱').replace(/卡爾/g, '卡尔').replace(/塔奧/g, '塔奥')
+      .replace(/萊/g, '莱').replace(/蘭托/g, '兰托').replace(/卡爾/g, '卡尔').replace(/塔奧/g, '塔奥')
       .replace(/米奧/g, '米奥').replace(/安佩爾/g, '安佩尔').replace(/羅密/g, '罗密')
       .replace(/賽莉/g, '赛莉').replace(/科洛蒂婭/g, '科洛蒂娅').replace(/菲德麗卡/g, '费德丽卡')
-      .replace(/薩維里奧/g, '萨维里奥').replace(/多爾特/g, '多尔特').replace(/沃爾卡/g, '沃尔卡');
+      .replace(/薩維里奧/g, '萨维里奥').replace(/多爾特/g, '多尔特').replace(/沃爾卡/g, '沃尔卡')
+      .replace(/博斯/g, '博斯').replace(/薩繆爾/g, '萨缪尔').replace(/派翠夏/g, '帕特莉夏')
+      .replace(/克里佛德/g, '克里福德').replace(/潔菲娜/g, '洁菲娜').replace(/卡菈/g, '卡拉')
+      .replace(/阿爾貝塔/g, '阿尔贝塔');
   });
-  ['zh', 'zh-tw', 'en', 'hi', 'id', 'pt-br'].forEach(function (lg) {
-    var dict = (lg === 'zh') ? NPC_ZH_CN : NPC_NAMES.en;
+  ['ja', 'zh', 'zh-tw', 'en', 'hi', 'id', 'pt-br'].forEach(function (lg) {
+    var dict = (lg === 'zh') ? NPC_ZH_CN : ((lg === 'ja') ? NPC_NAMES.ja : NPC_NAMES.en);
     if (lg === 'zh-tw') dict = NPC_ZH_TW;
     if (lg === 'hi' || lg === 'id' || lg === 'pt-br') dict = NPC_NAMES.en;
     if (!CONTENT[lg]) CONTENT[lg] = {};

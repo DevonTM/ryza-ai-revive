@@ -20,9 +20,12 @@
       ctl.appendChild(b);
       return b;
     };
-    var pin = mk('win-pin', '📌', '窗口置顶');
-    var min = mk('win-min', '—', '最小化');
-    var cls = mk('win-close', '✕', '关闭');
+    var pin = mk('win-pin', '📌', (window.I18n && I18n.tc) ? I18n.tc('win.pin', '窗口置顶') : '窗口置顶');
+    pin.setAttribute('data-i18n-title', 'win.pin');
+    var min = mk('win-min', '—', (window.I18n && I18n.tc) ? I18n.tc('win.min', '最小化') : '最小化');
+    min.setAttribute('data-i18n-title', 'win.min');
+    var cls = mk('win-close', '✕', (window.I18n && I18n.tc) ? I18n.tc('win.close', '关闭') : '关闭');
+    cls.setAttribute('data-i18n-title', 'win.close');
     var settingsBtn = document.getElementById('btn-settings');
     if (settingsBtn && settingsBtn.parentNode === bar) {
       bar.insertBefore(ctl, settingsBtn.nextSibling);

@@ -9,6 +9,12 @@
   var TYPES = ['goodMorning', 'playWithMe', 'task', 'wellDone'];
   var STYLES = ['normal', 'whisper'];
   var WEEK = ['日', '一', '二', '三', '四', '五', '六'];
+  var WEEK_KEYS = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
+
+  function weekLabel(d) {
+    var k = WEEK_KEYS[d];
+    return (window.I18n && I18n.tc) ? I18n.tc('dl.week.' + k, WEEK[d]) : WEEK[d];
+  }
 
   function todForHour(h) {
     if (h < 5) return 'night';
@@ -114,7 +120,7 @@
           var el = document.createElement('div');
           el.className = 'card' + (a.enabled ? '' : ' done');
           var days = (a.days && a.days.length)
-            ? a.days.slice().sort().map(function (d) { return WEEK[d]; }).join(' ')
+            ? a.days.slice().sort().map(weekLabel).join(' ')
             : I18n.t('alarm.everyday');
           el.innerHTML =
             '<div class="card-title"><span class="t-time"></span>' +
@@ -154,6 +160,7 @@
     TYPES: TYPES,
     STYLES: STYLES,
     WEEK: WEEK,
+    weekLabel: weekLabel,
     todForHour: todForHour
   };
 

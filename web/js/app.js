@@ -179,7 +179,7 @@
           } else App.enterGame(false);
         });
       }).catch(function (e) {
-        App.toast('素材索引加载失败：' + e.message, true);
+        App.toast(((window.I18n && I18n.tc) ? I18n.tc('toast.indexFail', '素材索引加载失败：') : '素材索引加载失败：') + e.message, true);
       });
     },
 
@@ -464,7 +464,7 @@
         });
       };
       document.getElementById('btn-settings-reset').onclick = function () {
-        if (confirm('恢复所有设置为默认值？')) {
+        if (confirm((window.I18n && I18n.tc) ? I18n.tc('settings.resetAsk', '恢复所有设置为默认值？') : '恢复所有设置为默认值？')) {
           Config.reset(); App.buildSettings(); App.buildCharaForm();
           App.toast(I18n.t('toast.saved'));
         }
@@ -1578,15 +1578,14 @@
             b.type = 'button';
             b.className = 'chip' + (defDays.indexOf(i) >= 0 ? ' on' : '');
             b.setAttribute('data-day', String(i));
-            b.textContent = label;
+            b.textContent = Alarm.weekLabel ? Alarm.weekLabel(i) : label;
             b.onclick = function () { b.classList.toggle('on'); };
             chips.appendChild(b);
           });
           days.appendChild(chips);
           var hint = document.createElement('div');
           hint.className = 'hint';
-          hint.textContent = I18n.t('alarm.everyday') + ' — ' +
-            (I18n.lang === 'en' ? 'leave all off' : (I18n.lang === 'ja' ? '未選択で毎日' : '全不选即每天'));
+          hint.textContent = I18n.t('alarm.everyday') + ' — ' + I18n.tc('alarm.everydayHint', '全不选即每天');
           days.appendChild(hint);
           body.appendChild(days);
 
@@ -1603,7 +1602,7 @@
         },
         onOk: function (body) {
           var time = (body.querySelector('#f-alarm-time').value || '').slice(0, 5);
-          if (!/^\d{2}:\d{2}$/.test(time)) { App.toast('请填写时间', true); return false; }
+          if (!/^\d{2}:\d{2}$/.test(time)) { App.toast(I18n.tc('alarm.needTime', '请填写时间'), true); return false; }
           var type = body.querySelector('#f-alarm-type').value;
           var style = body.querySelector('#f-alarm-style').value;
           var days = [];
@@ -1686,7 +1685,7 @@
           el.innerHTML = '<div class="card-title"><span class="tag' +
             (m.who === 'ryza' ? '' : ' leaf') + ' t-who"></span></div>' +
             '<div class="card-sub t-text"></div>';
-          el.querySelector('.t-who').textContent = m.who === 'ryza' ? 'ライザ' : '你';
+          el.querySelector('.t-who').textContent = m.who === 'ryza' ? I18n.tc('chara.ryza', 'ライザ') : I18n.tc('chara.you', '你');
           el.querySelector('.t-text').textContent = m.text;
           root.appendChild(el);
         });
@@ -1846,7 +1845,7 @@
             img.onerror = function () { img.src = 'assets/images/chara_placeholder.png'; };
             el.querySelector('.t-name').textContent = wearable
               ? I18n.t('skin.wear') : I18n.t('skin.previewOnly');
-            el.querySelector('.skin-id').textContent = s.id.replace('crf_skn_002_', '');
+            el.querySelector('.skin-id').textContent = Avatar.outfitName ? Avatar.outfitName(s.id) : s.id.replace('crf_skn_002_', '');
             el.onclick = function () {
               if (!wearable) {
                 App.toast(I18n.t('skin.previewOnly'), true);
@@ -1971,7 +1970,7 @@
       App._title(w, T('settings.llm'));
       App._field(w, T('settings.baseUrl'), Config.section('llm').baseUrl,
         function (v) { Config.set('llm.baseUrl', v); },
-        { hint: 'OpenAI 兼容地址，以 /v1 结尾；也可放 config/providers.json 自动水合' });
+        { hint: I18n.tc('settings.baseUrl.hint', 'OpenAI 兼容地址，以 /v1 结尾；也可放 config/providers.json 自动水合') });
       var models = App._llmModels || [];
       if (models.length) {
         var cur = Config.section('llm').model || '';
@@ -2171,14 +2170,14 @@
       if (Config.section('tts').mode === 'clone') {
         App._field(w, T('settings.model'), Config.section('tts').modelClone,
           function (v) { Config.set('tts.modelClone', v); },
-          { hint: '克隆通道使用的模型 id（服务端提供，如 MiMo 的声音克隆模型）' });
+          { hint: I18n.tc('settings.modelClone.hint', '克隆通道使用的模型 id（服务端提供，如 MiMo 的声音克隆模型）') });
         App._field(w, T('settings.refAudio'), Config.section('tts').reference,
           function (v) { Config.set('tts.reference', v); },
-          { hint: '必须是 wav 或 mp3；APK 里的原声是 m4a，需先转码' });
+          { hint: I18n.tc('settings.refAudio.hint', '必须是 wav 或 mp3；APK 里的原声是 m4a，需先转码') });
       } else if (Config.section('tts').mode === 'preset') {
         App._field(w, T('settings.model'), Config.section('tts').modelPreset,
           function (v) { Config.set('tts.modelPreset', v); },
-          { hint: '预设音色通道使用的模型 id（服务端提供）' });
+          { hint: I18n.tc('settings.modelPreset.hint', '预设音色通道使用的模型 id（服务端提供）') });
         App._field(w, T('settings.presetVoice'), Config.section('tts').presetVoice,
           function (v) { Config.set('tts.presetVoice', v); });
       }
@@ -2349,11 +2348,11 @@
       var bImp = document.createElement('button');
       bImp.className = 'btn'; bImp.textContent = T('settings.import');
       bImp.onclick = function () {
-        var txt = prompt('粘贴配置 JSON');
+        var txt = prompt(I18n.tc('settings.pasteJson', '粘贴配置 JSON'));
         if (!txt) return;
         try { Config.importJSON(txt); App.buildSettings(); App.buildCharaForm();
               App.toast(I18n.t('toast.saved')); }
-        catch (e) { App.toast('配置解析失败：' + e.message, true); }
+        catch (e) { App.toast(I18n.tc('toast.importFail', '配置解析失败：') + e.message, true); }
       };
       row2.appendChild(bExp); row2.appendChild(bImp);
       w.appendChild(row2);
@@ -2386,10 +2385,10 @@
     _testLlm: function () {
       var llm = Config.section('llm');
       if (!llm.apiKey) { App.toast(I18n.t('toast.needKey'), true); return; }
-      App.toast('测试中…');
+      App.toast(I18n.tc('toast.testing', '测试中…'));
       Api.chat([], '短く一言、あいさつして。', { mode: 'chat', style: 'text' })
         .then(function (r) { App.toast('OK：' + r.text); })
-        .catch(function (e) { App.toast('失败：' + e.message, true); });
+        .catch(function (e) { App.toast(I18n.tc('toast.fail', '失败：') + e.message, true); });
     },
 
     _testTts: function () {
@@ -2404,14 +2403,14 @@
       if (tts.provider !== 'fish' && Api.isPlaceholderModel(model)) {
         App.toast(I18n.t('toast.needModel'), true); return;
       }
-      App.toast('合成中…');
+      App.toast(I18n.tc('toast.synthesizing', '合成中…'));
       /* no explicit mode → Api.speak uses the live talk mode, so this
          doubles as a preview of the per-mode voice direction. */
       Api.speak('やあ、聞こえてる？').then(function (url) {
-        if (!url) { App.toast('语音已关闭'); return; }
+        if (!url) { App.toast(I18n.tc('toast.voiceOff', '语音已关闭')); return; }
         App.playUrl(url);
         App.toast('OK');
-      }).catch(function (e) { App.toast('失败：' + e.message, true); });
+      }).catch(function (e) { App.toast(I18n.tc('toast.fail', '失败：') + e.message, true); });
     },
 
     buildCharaForm: function () {
@@ -2420,7 +2419,7 @@
       var T = function (k) { return I18n.t(k); };
       var c = Config.section('chara'), p = Config.section('profile');
 
-      App._title(w, 'ライザ（キャラ設定）');
+      App._title(w, I18n.tc('chara.ryzaTitle', 'ライザ（キャラ設定）'));
       App._field(w, T('chara.personality'), c.personality,
         function (v) { Config.set('chara.personality', v); });
       App._field(w, T('chara.likes'), c.likes,
@@ -2434,7 +2433,7 @@
       App._field(w, T('chara.extra'), c.extra,
         function (v) { Config.set('chara.extra', v); }, { multi: true });
 
-      App._title(w, 'あなた（プレイヤー設定）');
+      App._title(w, I18n.tc('chara.youTitle', 'あなた（プレイヤー設定）'));
       App._field(w, T('onb.name'), p.name,
         function (v) { Config.set('profile.name', v); });
       App._field(w, T('onb.birthday'), p.birthday,
@@ -2464,13 +2463,13 @@
       var row = document.createElement('div');
       row.className = 'btn-row';
       var b = document.createElement('button');
-      b.className = 'btn primary'; b.textContent = '保存并回到对话';
+      b.className = 'btn primary'; b.textContent = I18n.tc('chara.saveAndBack', '保存并回到对话');
       b.onclick = function () { App.toast(I18n.t('toast.saved')); App.showView('talk'); };
       row.appendChild(b);
       var b2 = document.createElement('button');
-      b2.className = 'btn danger'; b2.textContent = '清空对话记忆';
+      b2.className = 'btn danger'; b2.textContent = I18n.tc('chara.clearHistory', '清空对话记忆');
       b2.onclick = function () {
-        if (confirm('清空当前对话历史？')) { App.history = []; App.toast('已清空'); }
+        if (confirm(I18n.tc('chara.clearHistoryAsk', '清空当前对话历史？'))) { App.history = []; App.toast(I18n.tc('toast.cleared', '已清空')); }
       };
       row.appendChild(b2);
       w.appendChild(row);

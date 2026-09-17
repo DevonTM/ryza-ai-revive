@@ -197,7 +197,7 @@
     init: function (onReady) {
       Avatar.host = makeHost('scene-canvas');
       if (!Avatar.host) {
-        App && App.toast('此浏览器不支持 WebGL，立绘无法显示', true);
+        App && App.toast((window.I18n && I18n.tc) ? I18n.tc('toast.noWebGL', '此浏览器不支持 WebGL，立绘无法显示') : '此浏览器不支持 WebGL，立绘无法显示', true);
         return;
       }
       Avatar.scene = makeLayer(Avatar.host);
@@ -263,9 +263,11 @@
       return String(id || 'crf_skn_002_0001').replace(/_(01|99)$/, '');
     },
 
-    outfitName: function (id) {
+    outfitName: function (id, lang) {
       var oid = Avatar.outfitOf(id || (global.Config && Config.section('state').skin));
-      return Avatar.OUTFIT_NAMES[oid] || oid;
+      var base = Avatar.OUTFIT_NAMES[oid] || oid;
+      if (lang) return (window.I18n && I18n.tl) ? I18n.tl(lang, 'skin.name.' + oid, base) : base;
+      return (window.I18n && I18n.tc) ? I18n.tc('skin.name.' + oid, base) : base;
     },
 
     /* --------------------------------------------------- posture (source) */
@@ -889,7 +891,7 @@
       var tries = 0;
       (function poll() {
         if (a.isLoadingComplete()) {
-          if (a.hasErrors()) { done(new Error('素材加载失败：' + skelUrl)); return; }
+          if (a.hasErrors()) { done(new Error(((window.I18n && I18n.tc) ? I18n.tc('err.loadAsset', '素材加载失败：') : '素材加载失败：') + skelUrl)); return; }
           try {
             var atlas = a.require(atlasUrl);
             var loader = new spine.AtlasAttachmentLoader(atlas);
@@ -914,7 +916,7 @@
           } catch (e) { done(e); }
           return;
         }
-        if (++tries > 900) { done(new Error('加载超时：' + skelUrl)); return; }
+        if (++tries > 900) { done(new Error(((window.I18n && I18n.tc) ? I18n.tc('err.loadTimeout', '加载超时：') : '加载超时：') + skelUrl)); return; }
         setTimeout(poll, 50);
       })();
     },
@@ -969,7 +971,7 @@
             cb && cb(null);
           });
         }).catch(function (e) {
-          App && App.toast('皮肤加载失败：' + e.message, true);
+          App && App.toast(((window.I18n && I18n.tc) ? I18n.tc('err.loadSkin', '皮肤加载失败：') : '皮肤加载失败：') + e.message, true);
           cb && cb(e);
         });
       };
@@ -985,7 +987,7 @@
         .then(function (scenes) {
           var stage = scenes[stageId];
           var entry = stage && (stage[tod] || stage[Object.keys(stage)[0]]);
-          if (!entry) throw new Error('没有这个场景：' + stageId + '/' + tod);
+          if (!entry) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.noStage', '没有这个场景：') : '没有这个场景：') + stageId + '/' + tod);
           L.ready = false;
           var cfgP = entry.config
             ? fetch(entry.config).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })
