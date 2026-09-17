@@ -27,10 +27,10 @@
 <header id="topbar">
   <button class="icon-btn plain" id="btn-menu" title="メニュー" data-i18n-title="nav.menu"><img src="assets/icons/drawer.svg" alt=""></button>
   <div class="spacer"></div>
-  <button type="button" id="btn-voice" class="voice-pill" title="音声 / テキスト">
+  <button type="button" id="btn-voice" class="voice-pill" title="音声 / テキスト" data-i18n-title="tt.voice">
     <canvas id="lottie-voice" width="30" height="30"></canvas><img id="voice-text-ico" class="hidden" src="assets/icons/mode_text.svg" alt=""><span id="voice-pill-label">ボイス</span>
   </button>
-  <button class="icon-btn" id="btn-expand" title="メニュー">»</button>
+  <button class="icon-btn" id="btn-expand" title="メニュー" data-i18n-title="nav.menu">»</button>
 </header>
 
 <div id="side-menu">
@@ -71,17 +71,17 @@
 
 <main id="view-talk" class="view active">
   <div id="hud-cluster">
-    <button type="button" class="apple-row" id="hud-stamina" title="スタミナ"></button>
+    <button type="button" class="apple-row" id="hud-stamina" title="スタミナ" data-i18n-title="stamina"></button>
     <div class="hud-line">
-      <button type="button" class="money-pill" id="hud-money" title="所持金"><img src="assets/icons/hud_coin.svg" alt=""><b id="hud-money-n">0</b></button>
-      <button type="button" class="lv-pill" id="hud-level" title="レベル">Lv1</button>
+      <button type="button" class="money-pill" id="hud-money" title="所持金" data-i18n-title="tt.money"><img src="assets/icons/hud_coin.svg" alt=""><b id="hud-money-n">0</b></button>
+      <button type="button" class="lv-pill" id="hud-level" title="レベル" data-i18n-title="st.level">Lv1</button>
     </div>
   </div>
   <div id="quick-btns">
-    <button type="button" class="round-btn hidden" id="btn-posture" title="座る/立つ">座</button>
-    <button type="button" class="round-btn" id="btn-log-toggle" title="会話履歴"><img src="assets/icons/arrow_up.svg" alt=""></button>
-    <button type="button" class="round-btn" id="btn-quest-sheet" title="クエスト"><img src="assets/icons/quest.svg" alt=""></button>
-    <button type="button" class="round-btn" id="btn-bag" title="道具"><img src="assets/icons/bag.svg" alt=""></button>
+    <button type="button" class="round-btn hidden" id="btn-posture" title="座る/立つ" data-i18n-title="tt.posture">座</button>
+    <button type="button" class="round-btn" id="btn-log-toggle" title="会話履歴" data-i18n-title="tt.log"><img src="assets/icons/arrow_up.svg" alt=""></button>
+    <button type="button" class="round-btn" id="btn-quest-sheet" title="クエスト" data-i18n-title="quest.title"><img src="assets/icons/quest.svg" alt=""></button>
+    <button type="button" class="round-btn" id="btn-bag" title="道具" data-i18n-title="inv.title"><img src="assets/icons/bag.svg" alt=""></button>
   </div>
   <div id="log-panel">
     <div id="log-head">
@@ -100,12 +100,12 @@
       <button class="mini-btn" id="btn-retry" data-i18n="talk.retry">重试</button>
     </div>
     <div id="input-bar">
-      <button type="button" class="round-btn speed-btn" id="btn-speed" title="テキスト速度">×1</button>
+      <button type="button" class="round-btn speed-btn" id="btn-speed" title="テキスト速度" data-i18n-title="settings.speed">×1</button>
       <div class="input-pill">
-        <input id="input" type="text" placeholder="和莱莎说点什么…" autocomplete="off">
-        <button type="button" id="btn-newtalk" title="新しい会話"><img src="assets/icons/asterisk.svg" alt=""></button>
+        <input id="input" type="text" placeholder="" autocomplete="off">
+        <button type="button" id="btn-newtalk" title="新しい会話" data-i18n-title="nav.newTalk"><img src="assets/icons/asterisk.svg" alt=""></button>
       </div>
-      <button type="button" id="btn-send" class="round-btn send-btn" title="送信"><img src="assets/icons/send.svg" alt="send"></button>
+      <button type="button" id="btn-send" class="round-btn send-btn" title="送信" data-i18n-title="tt.send"><img src="assets/icons/send.svg" alt="send"></button>
     </div>
   </div>
 </main>
@@ -204,10 +204,10 @@
     <button class="mode-pill style" data-style="text"><span data-i18n="style.text">📝 文字</span></button>
   </div>
   <div class="sheet-scene">
-    <button type="button" class="hud-chip shrink" id="hud-place" title="所在地">ライザの家</button>
-    <button type="button" class="hud-chip" id="hud-tod" title="時間帯">昼</button>
-    <button type="button" class="hud-chip" id="hud-mode" title="対話モード">雑談</button>
-    <button type="button" class="icon-btn" id="btn-map" title="ワールドマップ"><img src="assets/icons/world_map.svg" alt=""></button>
+    <button type="button" class="hud-chip shrink" id="hud-place" title="所在地" data-i18n-title="tt.place">ライザの家</button>
+    <button type="button" class="hud-chip" id="hud-tod" title="時間帯" data-i18n-title="tt.tod">昼</button>
+    <button type="button" class="hud-chip" id="hud-mode" title="対話モード" data-i18n-title="mode.sheet">雑談</button>
+    <button type="button" class="icon-btn" id="btn-map" title="ワールドマップ" data-i18n-title="world.title"><img src="assets/icons/world_map.svg" alt=""></button>
   </div>
 </div>
 

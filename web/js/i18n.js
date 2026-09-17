@@ -277,7 +277,9 @@
       'skin.name.crf_skn_002_0001': '平时便服',
       'skin.name.crf_skn_002_0002': '迪维尔的拥抱',
       'skin.name.crf_skn_002_0003': '最喜爱的便服',
-      'skin.name.crf_skn_002_0004': '百夏礼服'
+      'skin.name.crf_skn_002_0004': '百夏礼服',
+      'tt.voice': '语音 / 文字', 'tt.money': '持有金币', 'tt.posture': '坐下/站起',
+      'tt.log': '对话记录', 'tt.send': '发送', 'tt.place': '所在地', 'tt.tod': '时间段'
     },
 
     ja: {
@@ -549,7 +551,9 @@
       'skin.name.crf_skn_002_0001': '普段着',
       'skin.name.crf_skn_002_0002': 'ディヴェルの抱擁',
       'skin.name.crf_skn_002_0003': 'お気に入りの普段着',
-      'skin.name.crf_skn_002_0004': '百夏の礼装'
+      'skin.name.crf_skn_002_0004': '百夏の礼装',
+      'tt.voice': '音声 / テキスト', 'tt.money': '所持金', 'tt.posture': '座る/立つ',
+      'tt.log': '会話履歴', 'tt.send': '送信', 'tt.place': '所在地', 'tt.tod': '時間帯'
     },
 
     en: {
@@ -821,7 +825,9 @@
       'skin.name.crf_skn_002_0001': 'Everyday Outfit',
       'skin.name.crf_skn_002_0002': "Divel's Embrace",
       'skin.name.crf_skn_002_0003': 'Favorite Everyday Outfit',
-      'skin.name.crf_skn_002_0004': 'Summer Formal'
+      'skin.name.crf_skn_002_0004': 'Summer Formal',
+      'tt.voice': 'Voice / Text', 'tt.money': 'Money', 'tt.posture': 'Sit / Stand',
+      'tt.log': 'Chat log', 'tt.send': 'Send', 'tt.place': 'Location', 'tt.tod': 'Time of day'
     }
   };
 
@@ -926,7 +932,9 @@
     'skin.name.crf_skn_002_0001': '平時便服',
     'skin.name.crf_skn_002_0002': '迪維爾的擁抱',
     'skin.name.crf_skn_002_0003': '最喜愛的便服',
-    'skin.name.crf_skn_002_0004': '百夏禮服'
+    'skin.name.crf_skn_002_0004': '百夏禮服',
+    'tt.voice': '語音 / 文字', 'tt.money': '持有金幣', 'tt.posture': '坐下/站立',
+    'tt.log': '對話紀錄', 'tt.send': '發送', 'tt.place': '所在地', 'tt.tod': '時段'
   });
 
   T.hi = inherit(T.en, {
@@ -959,7 +967,9 @@
     'title.start': 'Mulai', 'mode.sheet': 'Mode obrolan' , 'mode.chat': 'Obrolan', 'mode.story': 'Cerita', 'mode.immersive': 'Imersif',
     'mode.asmr': 'ASMR', 'mode.text': 'Teks', 'style.voice': '🔊 Suara', 'style.text': '📝 Teks',
     'drawer.foot': 'Versi rebuild offline · Tidak terhubung ke server resmi', 'nav.menu': 'Menu',
-    'greet.1': '……Hai, kita bertemu lagi.', 'greet.n': '……Hari ini kita bertemu lagi.'
+    'greet.1': '……Hai, kita bertemu lagi.', 'greet.n': '……Hari ini kita bertemu lagi.',
+    'tt.voice': 'Suara / Teks', 'tt.money': 'Uang', 'tt.posture': 'Duduk / Berdiri',
+    'tt.log': 'Riwayat obrolan', 'tt.send': 'Kirim', 'tt.place': 'Lokasi', 'tt.tod': 'Waktu'
   });
 
   T['pt-br'] = inherit(T.en, {
