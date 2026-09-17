@@ -25,7 +25,7 @@
      bottom log panel, and the side menu (ショップ…ワールドマップにもどる)
      slides in on the right. -->
 <header id="topbar">
-  <button class="icon-btn plain" id="btn-menu" title="メニュー"><img src="assets/icons/drawer.svg" alt=""></button>
+  <button class="icon-btn plain" id="btn-menu" title="メニュー" data-i18n-title="nav.menu"><img src="assets/icons/drawer.svg" alt=""></button>
   <div class="spacer"></div>
   <button type="button" id="btn-voice" class="voice-pill" title="音声 / テキスト">
     <canvas id="lottie-voice" width="30" height="30"></canvas><img id="voice-text-ico" class="hidden" src="assets/icons/mode_text.svg" alt=""><span id="voice-pill-label">ボイス</span>
@@ -47,7 +47,7 @@
   <div class="drawer-head">
     <img id="drawer-avatar" src="assets/images/chara_icons/ryza.png" alt="">
     <div>
-      <div class="drawer-name">ライザ</div>
+      <div class="drawer-name" data-i18n="chara.ryza">ライザ</div>
       <div class="drawer-sub" id="drawer-day">同伴 1 天</div>
     </div>
   </div>
@@ -65,7 +65,7 @@
     <li data-action="fullscreen"><img src="assets/icons/allscreen.svg" alt=""> <span data-i18n="nav.fullscreen">全屏</span></li>
     <li data-view="settings"><img src="assets/icons/charaedit.svg" alt=""> <span data-i18n="nav.settings">设置</span></li>
   </ul>
-  <div class="drawer-foot">离线重建版 · 不连接官方服务器</div>
+  <div class="drawer-foot" data-i18n="drawer.foot">离线重建版 · 不连接官方服务器</div>
 </nav>
 <div id="scrim"></div>
 
@@ -87,8 +87,8 @@
     <div id="log-head">
       <img id="log-avatar" src="assets/images/chara_icons/ryza.png" alt="">
       <div id="log-ident">
-        <div id="log-name">ライザ</div>
-        <div id="log-sub" title="対話モード">自由に雑談を楽しむモード</div>
+        <div id="log-name" data-i18n="chara.ryza">ライザ</div>
+        <div id="log-sub" title="対話モード" data-i18n-title="mode.sheet">自由に雑談を楽しむモード</div>
       </div>
     </div>
     <div id="log-body">

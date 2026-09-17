@@ -550,6 +550,8 @@
       }
       var todBtn = document.getElementById('btn-tod-label');
       if (todBtn) todBtn.textContent = World.todLabel(st.tod);
+      var dn = document.querySelector('.drawer-name');
+      if (dn) dn.textContent = I18n.tc('chara.ryza', 'ライザ');
       var dd = document.getElementById('drawer-day');
       if (dd) dd.textContent = I18n.tf('drawer.days', '同伴 {n} 天', { n: (st.day || 1) });
       /* log panel identity line — official shows her name + the current
@@ -961,7 +963,7 @@
         var row = document.createElement('div');
         row.className = 'inv-row';
         row.innerHTML = '<span class="inv-name"></span><span class="inv-n"></span>';
-        var name = (Game.ITEMS[it.id] && Game.ITEMS[it.id].name) || it.id;
+        var name = (Game.itemName ? Game.itemName(it.id) : ((Game.ITEMS[it.id] && Game.ITEMS[it.id].name) || it.id));
         row.querySelector('.inv-name').textContent = name;
         row.querySelector('.inv-n').textContent = '×' + (it.count || 1);
         row.onclick = function () {
@@ -1139,8 +1141,9 @@
 
     greet: function () {
       var st = Config.section('state');
-      var line = st.day > 1 ? I18n.tc('greet.n', '……今日も、会えたね。')
-                            : I18n.tc('greet.1', '……やあ、会えたね。');
+      var lang = (window.Langs && Langs.llm) ? Langs.llm() : I18n.lang;
+      var line = st.day > 1 ? I18n.tl(lang, 'greet.n', '……今日も、会えたね。')
+                            : I18n.tl(lang, 'greet.1', '……やあ、会えたね。');
       App.showBubble(line);
       Avatar.setEmotion('happy', 'agree');
     },

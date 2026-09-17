@@ -238,7 +238,8 @@
       'settings.cloneFish': '用莱莎原声复刻（Fish）',
       'toast.cloning': '正在向百炼注册复刻音色…', 'toast.cloningFish': '正在向 Fish Audio 注册复刻音色…',
       'toast.cloneOk': '复刻完成，音色 ID 已填入',
-      'toast.cloneFail': '复刻失败：'
+      'toast.cloneFail': '复刻失败：',
+      'drawer.foot': '离线重建版 · 不连接官方服务器', 'nav.menu': '菜单'
     },
 
     ja: {
@@ -471,7 +472,8 @@
       'settings.cloneFish': 'ライザの声でクローン作成（Fish）',
       'toast.cloning': 'Bailian にクローン音声を登録中…', 'toast.cloningFish': 'Fish Audio にクローン音声を登録中…',
       'toast.cloneOk': '登録完了、voice_id を入力しました',
-      'toast.cloneFail': 'クローン作成失敗：'
+      'toast.cloneFail': 'クローン作成失敗：',
+      'drawer.foot': 'オフライン再構築版 · 公式サーバー非接続', 'nav.menu': 'メニュー'
     },
 
     en: {
@@ -704,7 +706,8 @@
       'settings.cloneFish': 'Clone Ryza\u2019s voice (Fish)',
       'toast.cloning': 'Registering cloned voice with Bailian\u2026', 'toast.cloningFish': 'Registering cloned voice with Fish Audio\u2026',
       'toast.cloneOk': 'Cloned voice ready, voice_id filled in',
-      'toast.cloneFail': 'Voice clone failed: '
+      'toast.cloneFail': 'Voice clone failed: ',
+      'drawer.foot': 'Offline rebuild · Not connected to official servers', 'nav.menu': 'Menu'
     }
   };
 
@@ -770,7 +773,8 @@
     'talk.retryHint': '連線失敗了', 'talk.retry': '重試',
     'world.lockedToast': '還沒有船，去不了庫肯島以外（完成主線8「造船出海」）',
     'talk.mapMove': '來到：{name}',
-    'quest.side': '支線', 'quest.cleared': '任務完成', 'quest.history': '已完成的委託'
+    'quest.side': '支線', 'quest.cleared': '任務完成', 'quest.history': '已完成的委託',
+    'drawer.foot': '離線重建版 · 不連接官方伺服器', 'nav.menu': '選單'
   });
 
   T.hi = inherit(T.en, {
@@ -785,7 +789,8 @@
     'nav.welcome': 'स्वागत', 'nav.profile': 'प्रोफ़ाइल',
     'talk.resetTitle': 'नई बात शुरू करें?',
     'title.start': 'शुरू', 'mode.sheet': 'बात मोड' , 'mode.chat': 'चैट', 'mode.story': 'कहानी', 'mode.immersive': 'इमर्सिव',
-    'mode.asmr': 'ASMR', 'mode.text': 'टेक्स्ट', 'style.voice': '🔊 वॉइस', 'style.text': '📝 टेक्स्ट'
+    'mode.asmr': 'ASMR', 'mode.text': 'टेक्स्ट', 'style.voice': '🔊 वॉइस', 'style.text': '📝 टेक्स्ट',
+    'drawer.foot': 'ऑफ़लाइन रीबिल्ड · आधिकारिक सर्वर से कनेक्ट नहीं', 'nav.menu': 'मेनू'
   });
 
   T.id = inherit(T.en, {
@@ -800,7 +805,9 @@
     'nav.welcome': 'Misi selamat datang', 'nav.profile': 'Profil',
     'talk.resetTitle': 'Mulai obrolan baru?',
     'title.start': 'Mulai', 'mode.sheet': 'Mode obrolan' , 'mode.chat': 'Obrolan', 'mode.story': 'Cerita', 'mode.immersive': 'Imersif',
-    'mode.asmr': 'ASMR', 'mode.text': 'Teks', 'style.voice': '🔊 Suara', 'style.text': '📝 Teks'
+    'mode.asmr': 'ASMR', 'mode.text': 'Teks', 'style.voice': '🔊 Suara', 'style.text': '📝 Teks',
+    'drawer.foot': 'Versi rebuild offline · Tidak terhubung ke server resmi', 'nav.menu': 'Menu',
+    'greet.1': '……Hai, kita bertemu lagi.', 'greet.n': '……Hari ini kita bertemu lagi.'
   });
 
   T['pt-br'] = inherit(T.en, {
@@ -815,7 +822,8 @@
     'nav.welcome': 'Boas-vindas', 'nav.profile': 'Perfil',
     'talk.resetTitle': 'Começar uma nova conversa?',
     'title.start': 'Começar', 'mode.sheet': 'Modo de conversa' , 'mode.chat': 'Bate-papo', 'mode.story': 'História', 'mode.immersive': 'Imersivo',
-    'mode.asmr': 'ASMR', 'mode.text': 'Texto', 'style.voice': '🔊 Voz', 'style.text': '📝 Texto'
+    'mode.asmr': 'ASMR', 'mode.text': 'Texto', 'style.voice': '🔊 Voz', 'style.text': '📝 Texto',
+    'drawer.foot': 'Versão offline · Não conectado aos servidores oficiais', 'nav.menu': 'Menu'
   });
 
   /* =====================================================================
@@ -1194,6 +1202,11 @@
       var v = I18n.t(key);
       return (v === key) ? (fallback == null ? key : fallback) : v;
     },
+    /* Lookup with explicit target language, fallback to English then default. */
+    tl: function (lang, key, fallback) {
+      var d = T[lang] || T[I18n.lang] || T.en || T.zh;
+      return (d && (key in d)) ? d[key] : (T.en && (key in T.en) ? T.en[key] : (fallback == null ? key : fallback));
+    },
     /* Template fill: I18n.tf('qact.gather.ok', {items:'…', tail:'…'}) */
     tf: function (key, fallback, map) {
       var s = I18n.tc(key, fallback);
@@ -1202,10 +1215,14 @@
       });
       return s;
     },
-    /* Apply data-i18n attributes inside a subtree. */
+    /* Apply data-i18n and data-i18n-title attributes inside a subtree. */
     apply: function (root) {
-      (root || document).querySelectorAll('[data-i18n]').forEach(function (el) {
+      var r = root || document;
+      r.querySelectorAll('[data-i18n]').forEach(function (el) {
         el.textContent = I18n.t(el.getAttribute('data-i18n'));
+      });
+      r.querySelectorAll('[data-i18n-title]').forEach(function (el) {
+        el.setAttribute('title', I18n.t(el.getAttribute('data-i18n-title')));
       });
     }
   };

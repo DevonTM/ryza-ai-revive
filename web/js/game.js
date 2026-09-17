@@ -433,7 +433,8 @@
       Game.s = Object.assign(JSON.parse(JSON.stringify(DEFAULTS)), snap);
       Game.save();
       Game.emit('reset');
-    }
+    },
+    itemName: itemName
   };
 
   global.Game = Game;
