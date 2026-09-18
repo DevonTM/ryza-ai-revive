@@ -244,7 +244,10 @@
         { title: Quests.titleOf(q), exp: reward.exp, money: reward.money }),
         'mem.cleared', { title: Quests.titleOf(q), exp: reward.exp, money: reward.money });
       var log = Game.s.flags.quest_log || [];
-      log.push({ no: q.no, type: q.type, title: q.title, at: Date.now() });
+      var entry = { no: q.no, type: q.type, title: q.title, at: Date.now() };
+      var k = Quests.keyOf(q);
+      if (k) entry.k = k;
+      log.push(entry);
       if (log.length > 40) log = log.slice(-40);
       Game.s.flags.quest_log = log;
       if (q.no > 8) Game.setFlag('side_done', Game.flag('side_done', 0) + 1);
@@ -528,7 +531,7 @@
           row.className = 'qhist';
           row.innerHTML = '<img alt="" src="assets/icons/quest_clear_icon.svg"><span></span>';
           row.querySelector('span').textContent =
-            x.no <= 8 ? L('q.' + x.no + '.title', x.title) : x.title;
+            x.k ? L(x.k + '.title', x.title) : (x.no <= 8 ? L('q.' + x.no + '.title', x.title) : x.title);
           root.appendChild(row);
         });
       }
@@ -539,7 +542,7 @@
       if (!ov) return;
       ov.classList.remove('hidden');
       var t = ov.querySelector('.qc-title');
-      if (t) t.textContent = (q && q.title) || '';
+      if (t) t.textContent = (q ? Quests.titleOf(q) : '');
       var p = ov.querySelector('.qc-praise');
       if (p) {
         var pi = Math.floor(Math.random() * PRAISES.length);

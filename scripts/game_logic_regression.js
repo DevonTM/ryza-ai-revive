@@ -51,27 +51,17 @@ function load(file) {
 
 load('util.js');
 load('config.js');
+load('i18n.js');
 load('game.js');
 /* Audio / fx / quests render helpers used at clear time. */
 sandbox.Sound = { se() {}, tapVoice() {} };
 sandbox.Fx = { burstConfetti() {} };
-sandbox.I18n = {
-  t: (k) => k,
-  tc: (k, fb) => fb,
-  tf: (k, fb) => fb,
-  all: (k) => {
-    if (k === 'place.stage_01_002_01') return ['塔奥家门前', 'In front of Tao’s house'];
-    if (k === 'place.stage_01_001_04') return ['莱莎家', 'Ryza’s Home'];
-    return [];
-  },
-  LANG_NAMES: { ja: '日本語', zh: '简体中文' }
-};
 load('quests.js');
 load('daily.js');
 load('api.js');
 load('world.js');
 
-const { Game, Quests, Daily, Config, Api, World } = sandbox;
+const { Game, Quests, Daily, Config, Api, World, I18n } = sandbox;
 
 /* ------------------------------------------------------------ basics */
 console.log('# Game basics');
@@ -237,6 +227,11 @@ ok(Game.s.sailed === true, 'world unlock flag set');
 ok(Game.s.money === 250 - 200 + 180, 'sail fee paid, clear reward granted: ' + Game.s.money);
 qq = Quests.takeNext();
 ok(qq.no >= 9 || qq.no === 9 + 100, 'past quest8 -> infinite side quests');
+I18n.setLang('en');
+ok(Quests.titleOf(qq) !== '' && Quests.titleOf(qq) !== '移動販売の一日', 'Quests.titleOf localizes side quest: ' + Quests.titleOf(qq));
+I18n.setLang('id');
+ok(Quests.titleOf(qq) !== '' && Quests.titleOf(qq) !== '移動販売の一日', 'Quests.titleOf in ID localizes side quest: ' + Quests.titleOf(qq));
+I18n.setLang('ja');
 
 console.log('# daily login');
 Game.reset();

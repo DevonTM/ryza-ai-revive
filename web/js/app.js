@@ -467,7 +467,7 @@
         var hasKey = !!(Config.section('llm').apiKey);
         if (hasKey) App.toast(I18n.t('toast.questGen'));
         Quests.generate(hasKey).then(function (q) {
-          App.toast(I18n.t('quest.newOk') + '「' + q.title + '」');
+          App.toast(I18n.t('quest.newOk') + '「' + Quests.titleOf(q) + '」');
           Quests.render(document.getElementById('quest-list'), {});
         });
       };
@@ -950,7 +950,7 @@
       row('G', Game.cheat() ? '∞' : String(Game.s.money));
       var q = Quests.active();
       if (q) row(I18n.t('quest.goal'),
-        '「' + App.esc(q.title) + '」 ' + (q.step | 0) + '/' + q.need);
+        '「' + App.esc(Quests.titleOf(q)) + '」 ' + (q.step | 0) + '/' + q.need);
       row(I18n.t('st.met'), String(Game.s.met_charas.length));
       if (Game.s.met_charas.length && window.World && World.npcs) {
         var names = Game.s.met_charas.slice(-12).reverse()

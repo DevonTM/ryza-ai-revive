@@ -1362,7 +1362,7 @@
     'stage_01_001_06': { ja: "憩いの広場", zh: "休憩广场", en: "Rest Area", id: "Alun-alun Istirahat" },
     'stage_01_001_08': { ja: "水源の滝つぼ", zh: "水源瀑布潭", en: "Water Source Basin", id: "Kolam Air Terjun Mata Air" },
     'field_01_002': { ja: "小妖精の森", zh: "小妖精森林", en: "Pixie Forest", id: "Hutan Pixie" },
-    'stage_01_002_01': { ja: "隠れ家前", zh: "秘密藏身处前", en: "In front of Tao’s house", id: "Di Depan Rumah Tao" },
+    'stage_01_002_01': { ja: "隠れ家前", zh: "塔奥家门前", en: "In front of Tao’s house", id: "Di Depan Rumah Tao" },
     'stage_01_002_02': { ja: "彩花の円環", zh: "彩花圆环", en: "Flower Circle", id: "Lingkaran Bunga Berwarna" },
     'stage_01_002_03': { ja: "ランタン樹", zh: "提灯树", en: "Lantern Tree", id: "Pohon Lentera" },
     'stage_01_002_04': { ja: "切り株のステージ", zh: "树桩舞台", en: "Tree Stump Stage", id: "Panggung Tunggul Pohon" },
