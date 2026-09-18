@@ -262,6 +262,7 @@ const snap = Game.snapshot();
 Game.reset();
 Game.restoreSnapshot(snap);
 ok(JSON.stringify(Game.snapshot()) === JSON.stringify(snap), 'snapshot round-trips');
+ok(Game.s.met_charas.indexOf('npc_ryza') !== -1, 'npc_ryza is marked met on load');
 
 console.log('# talk map move (entry_map_move / current_stage)');
 World.hierarchy = JSON.parse(fs.readFileSync(

@@ -71,7 +71,7 @@
       { id: 'wasser', count: 3 },
       { id: 'honey', count: 1 }
     ],
-    met_charas: [],
+    met_charas: ['npc_ryza'],
     met_pairs: [],
     memory: [],
     flags: {},
@@ -129,6 +129,7 @@
       Game.s.inventory = sanitizeList(Game.s.inventory);
       Game.s.ryza_inventory = sanitizeList(Game.s.ryza_inventory);
       Game.s.met_charas = Array.isArray(Game.s.met_charas) ? Game.s.met_charas : [];
+      if (Game.s.met_charas.indexOf('npc_ryza') === -1) Game.s.met_charas.unshift('npc_ryza');
       Game.s.met_pairs = Array.isArray(Game.s.met_pairs) ? Game.s.met_pairs : [];
       Game.s.memory = Array.isArray(Game.s.memory) ? Game.s.memory : [];
       Game.s.flags = (Game.s.flags && typeof Game.s.flags === 'object') ? Game.s.flags : {};
