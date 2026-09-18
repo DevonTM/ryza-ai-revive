@@ -101,6 +101,32 @@ while ((match = tagRegex.exec(html)) !== null) {
 ok(unlocalizedTitles.length === 0, 'All CJK titles carry data-i18n-title' + (unlocalizedTitles.length ? ' (' + unlocalizedTitles.join(', ') + ')' : ''));
 ok(missingTitleKeys.length === 0, 'All data-i18n-title keys exist in dictionary' + (missingTitleKeys.length ? ' (' + missingTitleKeys.join(', ') + ')' : ''));
 
+console.log('--- Checking index.html for unlocalized text content ---');
+const cleanHtml = html.replace(/<!--[\s\S]*?-->/g, '');
+const dynamicIds = new Set([
+  'drawer-day', 'voice-pill-label', 'btn-posture', 'btn-tod-label',
+  'hud-place', 'hud-tod', 'hud-mode', 'log-sub'
+]);
+
+const elemRegex = /<([a-zA-Z0-9]+)\b([^>]*)>([\s\S]*?)<\/\1>/g;
+let unlocalizedTexts = [];
+let em;
+while ((em = elemRegex.exec(cleanHtml)) !== null) {
+  const tag = em[1];
+  const attrs = em[2];
+  const body = em[3];
+  if (cjkRegex.test(body)) {
+    const idMatch = attrs.match(/\bid="([^"]+)"/);
+    const id = idMatch ? idMatch[1] : null;
+    if (id && dynamicIds.has(id)) continue;
+    const hasI18n = attrs.includes('data-i18n=') || body.includes('data-i18n=');
+    if (!hasI18n) {
+      unlocalizedTexts.push('<' + tag + (id ? ' id="' + id + '"' : '') + '>' + body.replace(/\s+/g, ' ').trim() + '</' + tag + '>');
+    }
+  }
+}
+ok(unlocalizedTexts.length === 0, 'All CJK text tags carry data-i18n' + (unlocalizedTexts.length ? ' (' + unlocalizedTexts.join(', ') + ')' : ''));
+
 if (failures === 0) {
   console.log('\nI18N CHECK: ALL PASS (' + zhKeys.length + ' UI keys verified across zh/ja/en)');
   process.exit(0);

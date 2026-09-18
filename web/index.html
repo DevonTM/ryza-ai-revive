@@ -145,7 +145,7 @@
 
 <section id="view-alarm" class="view">
   <div class="view-head"><h2 data-i18n="alarm.title">闹钟</h2>
-    <button class="mini-btn" id="btn-alarm-new">+ 新闹钟</button></div>
+    <button class="mini-btn" id="btn-alarm-new">+ <span data-i18n="alarm.new">新闹钟</span></button></div>
   <div id="alarm-list"></div>
 </section>
 
@@ -173,7 +173,7 @@
 
 <section id="view-settings" class="view">
   <div class="view-head"><h2 data-i18n="settings.title">设置</h2>
-    <button class="mini-btn" id="btn-settings-reset">恢复默认</button></div>
+    <button class="mini-btn" id="btn-settings-reset" data-i18n="settings.reset">恢复默认</button></div>
   <div class="form-wrap" id="settings-form"></div>
 </section>
 
@@ -233,7 +233,7 @@
 
 <div id="sheet-npc" class="sheet hidden">
   <div class="sheet-handle"></div>
-  <h3 id="npc-sheet-title">この場所にいる人</h3>
+  <h3 id="npc-sheet-title" data-i18n="world.here">在此地</h3>
   <div id="npc-sheet-list"></div>
 </div>
 
@@ -257,8 +257,8 @@
     <p id="onb-sub" class="onb-sub"></p>
     <div id="onb-body"></div>
     <div class="btn-row">
-      <button type="button" class="btn" id="onb-skip">跳过</button>
-      <button type="button" class="btn primary" id="onb-next">下一步</button>
+      <button type="button" class="btn" id="onb-skip" data-i18n="onb.skip">跳过</button>
+      <button type="button" class="btn primary" id="onb-next" data-i18n="onb.next">下一步</button>
     </div>
   </div>
 </div>

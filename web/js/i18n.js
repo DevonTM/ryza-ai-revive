@@ -935,7 +935,8 @@
     'skin.name.crf_skn_002_0003': '最喜愛的便服',
     'skin.name.crf_skn_002_0004': '百夏禮服',
     'tt.voice': '語音 / 文字', 'tt.money': '持有金幣', 'tt.posture': '坐下/站立',
-    'tt.log': '對話紀錄', 'tt.send': '發送', 'tt.place': '所在地', 'tt.tod': '時段'
+    'tt.log': '對話紀錄', 'tt.send': '發送', 'tt.place': '所在地', 'tt.tod': '時段',
+    'alarm.new': '新鬧鐘', 'settings.reset': '恢復預設'
   });
 
   T.hi = inherit(T.en, {
@@ -951,7 +952,8 @@
     'talk.resetTitle': 'नई बात शुरू करें?',
     'title.start': 'शुरू', 'mode.sheet': 'बात मोड' , 'mode.chat': 'चैट', 'mode.story': 'कहानी', 'mode.immersive': 'इमर्सिव',
     'mode.asmr': 'ASMR', 'mode.text': 'टेक्स्ट', 'style.voice': '🔊 वॉइस', 'style.text': '📝 टेक्स्ट',
-    'drawer.foot': 'ऑफ़लाइन रीबिल्ड · आधिकारिक सर्वर से कनेक्ट नहीं', 'nav.menu': 'मेनू'
+    'drawer.foot': 'ऑफ़लाइन रीबिल्ड · आधिकारिक सर्वर से कनेक्ट नहीं', 'nav.menu': 'मेनू',
+    'alarm.new': 'नया अलार्म', 'settings.reset': 'रीसेट'
   });
 
   T.id = inherit(T.en, {
@@ -971,7 +973,8 @@
     'drawer.foot': 'Versi rebuild offline · Tidak terhubung ke server resmi', 'nav.menu': 'Menu',
     'greet.1': '……Hai, kita bertemu lagi.', 'greet.n': '……Hari ini kita bertemu lagi.',
     'tt.voice': 'Suara / Teks', 'tt.money': 'Uang', 'tt.posture': 'Duduk / Berdiri',
-    'tt.log': 'Riwayat obrolan', 'tt.send': 'Kirim', 'tt.place': 'Lokasi', 'tt.tod': 'Waktu'
+    'tt.log': 'Riwayat obrolan', 'tt.send': 'Kirim', 'tt.place': 'Lokasi', 'tt.tod': 'Waktu',
+    'alarm.new': 'Alarm baru', 'settings.reset': 'Atur ulang'
   });
 
   T['pt-br'] = inherit(T.en, {
@@ -987,7 +990,8 @@
     'talk.resetTitle': 'Começar uma nova conversa?',
     'title.start': 'Começar', 'mode.sheet': 'Modo de conversa' , 'mode.chat': 'Bate-papo', 'mode.story': 'História', 'mode.immersive': 'Imersivo',
     'mode.asmr': 'ASMR', 'mode.text': 'Texto', 'style.voice': '🔊 Voz', 'style.text': '📝 Texto',
-    'drawer.foot': 'Versão offline · Não conectado aos servidores oficiais', 'nav.menu': 'Menu'
+    'drawer.foot': 'Versão offline · Não conectado aos servidores oficiais', 'nav.menu': 'Menu',
+    'alarm.new': 'Novo alarme', 'settings.reset': 'Redefinir'
   });
 
   /* =====================================================================
