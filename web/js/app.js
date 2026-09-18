@@ -7,6 +7,7 @@
   'use strict';
 
   var MEM_KEY = 'ryza.memory.v1';
+  var CHAT_KEY = 'ryza.chat.v1';
   var SAVE_KEY = 'ryza.saves.v1';
   var HOME_STAGE = 'stage_01_001_04';       // ライザの家 — the safe place to sleep
   var TEXT_SPEEDS = [
@@ -126,6 +127,26 @@
       App.audio.crossOrigin = 'anonymous';
       try { App.memory = JSON.parse(localStorage.getItem(MEM_KEY) || '[]'); }
       catch (e) { App.memory = []; }
+      var appCfg = Config.section('app');
+      if (appCfg && appCfg.restoreChat === false) {
+        App.history = [];
+        App._pages = [];
+        try { localStorage.removeItem(CHAT_KEY); } catch (e) {}
+      } else {
+        try {
+          var saved = JSON.parse(localStorage.getItem(CHAT_KEY) || 'null');
+          if (Array.isArray(saved)) {
+            App.history = saved.slice(-200);
+            App._pages = [];
+          } else if (saved && typeof saved === 'object') {
+            App.history = Array.isArray(saved.h) ? saved.h.slice(-200) : [];
+            App._pages = Array.isArray(saved.p) ? saved.p.slice(-5) : [];
+          } else {
+            App.history = [];
+            App._pages = [];
+          }
+        } catch (e) { App.history = []; App._pages = []; }
+      }
 
       Game.load();
       Daily.load();
@@ -193,7 +214,11 @@
       App._showDisclosure();
       App._dailyNudge();
       if (fromOnboard) return;
-      App.greet();
+      if (App.history && App.history.length) {
+        App._restoreLogPanel();
+      } else {
+        App.greet();
+      }
     },
 
     _tickDay: function () {
@@ -1125,7 +1150,7 @@
           body.appendChild(p);
         },
         onOk: function () {
-          App.history = [];
+          App.setHistory([]);
           if (window.Nsfw) Nsfw.reset();
           App._pages = []; App._pageSel = -1;
           var dots = document.getElementById('log-dots');
@@ -1203,6 +1228,7 @@
             role: 'assistant',
             content: Api.formatHistoryReply(reply.text)
           });
+          App.saveHistory();
           App.typeBubble(reply.text, function () {
             App.speakThen(reply.text, reply.emotion, reply.actSeconds);
           });
@@ -1398,6 +1424,43 @@
                                 : I18n.tc('input.hint', inp.placeholder);
     },
 
+    _cleanSpoken: function (content) {
+      var s = String(content || '');
+      var idx = s.indexOf('\n');
+      if (idx !== -1) {
+        var first = s.slice(0, idx);
+        if (/(?:emotion|attitude|undress|nsfw|stage|place|tod|sleep|time_advance|act)\s*[:：]/i.test(first)) {
+          return s.slice(idx + 1).replace(/^\s+/, '');
+        }
+      }
+      return s;
+    },
+
+    _restoreLogPanel: function () {
+      if (!App._pages || !App._pages.length) {
+        var asst = [];
+        for (var i = 0; i < (App.history || []).length; i++) {
+          var m = App.history[i];
+          if (m && m.role === 'assistant' && m.content) {
+            var clean = App._cleanSpoken(m.content);
+            if (clean) asst.push(clean);
+          }
+        }
+        App._pages = asst.slice(-5);
+      }
+      if (!App._pages.length) { App.greet(); return; }
+      App._pageSel = App._pages.length - 1;
+      var last = App._pages[App._pageSel];
+      var b = document.getElementById('bubble');
+      if (b) b.classList.remove('typing', 'speaking', 'hidden');
+      if (Config.section('app').showBubble !== false) {
+        var bt = document.getElementById('bubble-text');
+        if (bt) bt.textContent = last;
+      }
+      App._renderDots();
+      App._inputHint(false);
+    },
+
     _pushPage: function (text) {
       if (!text) return;
       var last = App._pages[App._pages.length - 1];
@@ -1406,6 +1469,7 @@
       if (App._pages.length > 5) App._pages.shift();
       App._pageSel = App._pages.length - 1;
       App._renderDots();
+      App.saveHistory();
     },
     _renderDots: function () {
       var host = document.getElementById('log-dots');
@@ -1699,6 +1763,27 @@
     },
     saveMemory: function () {
       try { localStorage.setItem(MEM_KEY, JSON.stringify(App.memory)); } catch (e) {}
+    },
+    setHistory: function (list, pages) {
+      App.history = Array.isArray(list) ? list.slice(-200) : [];
+      if (Array.isArray(pages)) {
+        App._pages = pages.slice(-5);
+      } else if (!App.history.length) {
+        App._pages = [];
+      }
+      App.saveHistory();
+    },
+    saveHistory: function () {
+      var appCfg = Config.section('app');
+      if (appCfg && appCfg.restoreChat === false) {
+        try { localStorage.removeItem(CHAT_KEY); } catch (e) {}
+        return;
+      }
+      try {
+        var slice = (App.history || []).slice(-200);
+        var pages = (App._pages || []).slice(-5);
+        localStorage.setItem(CHAT_KEY, JSON.stringify({ h: slice, p: pages }));
+      } catch (e) {}
     },
     renderMemory: function () {
       var root = document.getElementById('memory-list');
@@ -2320,6 +2405,17 @@
         function (v) { Config.set('app.vibration', v); });
       App._switch(w, T('settings.rim'), Config.section('app').rim !== false,
         function (v) { Config.set('app.rim', v); });
+      App._switch(w, T('settings.restoreChat'), Config.section('app').restoreChat !== false,
+        function (v) {
+          Config.set('app.restoreChat', v);
+          if (!v) {
+            try { localStorage.removeItem(CHAT_KEY); } catch (e) {}
+            Config.set('state.undressed', false);
+            if (window.Nsfw) Nsfw.apply(false);
+          } else {
+            App.saveHistory();
+          }
+        });
 
       /* ---------------- time passage (official drove it from AppServerClock) */
       App._title(w, T('settings.time'));
@@ -2537,7 +2633,7 @@
       var b2 = document.createElement('button');
       b2.className = 'btn danger'; b2.textContent = I18n.tc('chara.clearHistory', '清空对话记忆');
       b2.onclick = function () {
-        if (confirm(I18n.tc('chara.clearHistoryAsk', '清空当前对话历史？'))) { App.history = []; App.toast(I18n.tc('toast.cleared', '已清空')); }
+        if (confirm(I18n.tc('chara.clearHistoryAsk', '清空当前对话历史？'))) { App.setHistory([]); App.toast(I18n.tc('toast.cleared', '已清空')); }
       };
       row.appendChild(b2);
       w.appendChild(row);
@@ -2565,6 +2661,7 @@
         label: place ? (place.area + ' / ' + place.stage) : st.stage,
         settings: JSON.parse(Config.exportJSON()),
         history: App.history,
+        pages: App._pages,
         memory: App.memory,
         longmem: window.Memory ? Memory.snapshot() : null,
         game: Game.snapshot(),
@@ -2576,7 +2673,7 @@
     _applySnapshot: function (snap) {
       if (!snap || !snap.settings) return;
       Config.importJSON(JSON.stringify(snap.settings));
-      App.history = snap.history || [];
+      App.setHistory(snap.history || [], snap.pages);
       App.memory = snap.memory || [];
       App.saveMemory();
       if (window.Memory) Memory.restore(snap.longmem);

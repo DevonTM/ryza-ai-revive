@@ -338,6 +338,28 @@ for (const f of ['util.js', 'config.js', 'i18n.js', 'api.js', 'memory.js',
     const repNoAct = A.parseTaggedReply('[emotion:happy] やあ！');
     ok(repNoAct.actSeconds === null && repNoAct.emotion === 'happy',
        'parseTaggedReply defaults actSeconds to null when omitted');
+
+    /* chat history persistence & clothes sync */
+    ok(sandbox.Config.section('app').restoreChat === true, 'restoreChat default is true');
+    sandbox.App._pages = ['greeting'];
+    sandbox.App.setHistory([
+      { role: 'user', content: 'hello' },
+      { role: 'assistant', content: 'emotion:happy | undress:off\nworld' }
+    ], ['greeting', 'world']);
+    ok(sandbox.localStorage.getItem('ryza.chat.v1') !== null, 'setHistory writes to localStorage');
+    const stored = JSON.parse(sandbox.localStorage.getItem('ryza.chat.v1'));
+    ok(Array.isArray(stored.p) && stored.p[0] === 'greeting' && stored.p[1] === 'world',
+       'storage keeps greeting in pages array');
+    sandbox.App._restoreLogPanel();
+    ok(sandbox.App._pages.length === 2 && sandbox.App._pages[0] === 'greeting' && sandbox.App._pages[1] === 'world',
+       'restoreLogPanel retains greeting as first dot page');
+    sandbox.Nsfw.apply(true);
+    ok(sandbox.Config.section('state').undressed === true && sandbox.Nsfw.active(),
+       'Nsfw.apply(true) undresses');
+    sandbox.Config.set('app.restoreChat', false);
+    sandbox.Nsfw.init();
+    ok(sandbox.Config.section('state').undressed === false && !sandbox.Nsfw.active(),
+       'restoreChat:false clears undressed on init');
   } catch (e) {
     bad('runtime: ' + (e && e.stack || e));
   }

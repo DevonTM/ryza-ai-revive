@@ -46,6 +46,11 @@
   function init() {
     try {
       if (global.Config && typeof global.Config.section === 'function') {
+        var app = global.Config.section('app');
+        if (app && app.restoreChat === false) {
+          apply(false);
+          return;
+        }
         var nsfw = global.Config.section('nsfw');
         if (nsfw && nsfw.enabled === false) {
           apply(false);
