@@ -211,11 +211,15 @@ for (const f of ['util.js', 'config.js', 'i18n.js', 'api.js', 'memory.js',
     sandbox.Nsfw.onTurn({ nsfw: null });
     ok(!sandbox.Nsfw.active(), 'omitted tag does not strip');
     sandbox.Nsfw.onTurn(nsfwTag);
-    ok(sandbox.Nsfw.active(), 'llm nsfw:on strips');
+    ok(!sandbox.Nsfw.active(), 'disabled nsfw rejects llm nsfw:on');
+    sandbox.Config.set('nsfw.enabled', true);
+    sandbox.Nsfw.onTurn(nsfwTag);
+    ok(sandbox.Nsfw.active(), 'llm nsfw:on strips when enabled');
     ok(/肌が見えている/.test(sandbox.Nsfw.screenFact()),
        'prompt tells the LLM she is undressed');
     sandbox.Nsfw.reset();
     ok(!sandbox.Nsfw.active(), 'reset clears nsfw');
+    sandbox.Config.set('nsfw.enabled', false);
 
     sandbox.Config.set('app.timeMode', 'real');
     sandbox.Config.set('state.tod', 'aft');

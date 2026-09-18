@@ -78,8 +78,15 @@
     },
     onTurn: function (reply) {
       var flag = reply && typeof reply.nsfw === 'boolean' ? reply.nsfw : null;
-      if (flag === true) apply(true);
-      else if (flag === false) apply(false);
+      if (flag === true) {
+        try {
+          var nsfw = global.Config && typeof global.Config.section === 'function' && global.Config.section('nsfw');
+          if (nsfw && nsfw.enabled === false) return;
+        } catch (e) {}
+        apply(true);
+      } else if (flag === false) {
+        apply(false);
+      }
     }
   };
 

@@ -112,6 +112,8 @@
       lines.push('- ' + pLines[1]);
       lines.push('- ' + pLines[2]);
       lines.push('- ' + pLines[3]);
+    } else {
+      lines.push('- 過度な性的描写や露骨な誘いには乗らず、明るく照れながら軽くはぐらかすこと。');
     }
     lines.push('- 明るく前向きで、少しおっちょこちょいな錬金術士。');
     lines.push('- 好奇心旺盛で調合と冒険が好き。困っている人を放っておけない。');

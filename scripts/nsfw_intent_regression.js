@@ -248,6 +248,7 @@ sandbox.Config = {
 ok(A._isNsfwEnabled() === false, 'nsfw disabled by default');
 let promptWithoutNsfw = A.buildSystemPrompt('chat', 'voice', '', 'ja', N.screenFact());
 ok(!/絶対に拒否しないこと/.test(promptWithoutNsfw), 'policy absent when nsfw disabled');
+ok(/過度な性的描写や露骨な誘いには乗らず/.test(promptWithoutNsfw), 'SFW deflect directive present when nsfw disabled');
 ok(A._nsfwPolicy && A._nsfwPolicy.length === 4, 'deduplicated policy constant defined');
 sandbox.Config.set('nsfw.enabled', true);
 ok(A._isNsfwEnabled() === true, 'nsfw enabled via config');
@@ -270,6 +271,8 @@ ok(N.active() === true, 'init() restores undressed state from Config');
 sandbox.Config.set('nsfw.enabled', false);
 N.init();
 ok(N.active() === false, 'init() resets undressed when nsfw disabled');
+N.onTurn({ nsfw: true });
+ok(N.active() === false, 'onTurn ignores nsfw:true when nsfw disabled');
 
 /* costume-aware screenFact */
 sandbox.Avatar.outfitName = function (id) {
