@@ -77,6 +77,32 @@ if (parsedContent.ja && parsedContent.zh && parsedContent.en) {
   }
 }
 
+console.log('--- Checking World Hierarchy and NPC Notes coverage ---');
+const wh = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/assets/world_map/world_hierarchy.json'), 'utf8'));
+const npcPlacement = JSON.parse(fs.readFileSync(path.join(ROOT, 'web/assets/world_map/npc_placement.json'), 'utf8'));
+
+const hierarchyPlaceIds = [];
+wh.areas.forEach((a) => {
+  hierarchyPlaceIds.push(a.id);
+  a.fields.forEach((f) => {
+    hierarchyPlaceIds.push(f.id);
+    f.stages.forEach((s) => {
+      hierarchyPlaceIds.push(s.id);
+    });
+  });
+});
+
+['zh', 'en', 'id'].forEach((lang) => {
+  const missingPlaces = hierarchyPlaceIds.filter((id) => !parsedContent[lang] || !(('place.' + id) in parsedContent[lang]));
+  ok(missingPlaces.length === 0, 'All ' + hierarchyPlaceIds.length + ' hierarchy places have place.* in ' + lang + (missingPlaces.length ? ' (missing: ' + missingPlaces.slice(0, 5).join(', ') + '...)' : ''));
+});
+
+const noteNpcIds = npcPlacement.npcs.filter((n) => n.note).map((n) => n.id.replace(/^npc_/, ''));
+['zh', 'en', 'id'].forEach((lang) => {
+  const missingNotes = noteNpcIds.filter((id) => !parsedContent[lang] || !(('npcnote.' + id) in parsedContent[lang]));
+  ok(missingNotes.length === 0, 'All ' + noteNpcIds.length + ' NPC notes have npcnote.* in ' + lang + (missingNotes.length ? ' (missing: ' + missingNotes.join(', ') + ')' : ''));
+});
+
 console.log('--- Checking index.html for unlocalized tooltips ---');
 const html = fs.readFileSync(path.join(ROOT, 'web/index.html'), 'utf8');
 const tagRegex = /<[^>]+>/g;

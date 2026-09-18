@@ -239,9 +239,9 @@
       Object.keys(loc).forEach(function (id) {
         if (loc[id] !== stageId) return;
         var n = byId[id];
-        if (n) out.push({ id: n.id, name: World.npcName(n.id), note: n.note || '' });
+        if (n) out.push({ id: n.id, name: World.npcName(n.id), note: World.npcNote(n.id, n.note) });
       });
-      return out.sort(function (a, b) { return a.name.localeCompare(b.name, 'ja'); });
+      return out.sort(function (a, b) { return a.name.localeCompare(b.name, (window.I18n && I18n.lang) || 'ja'); });
     },
 
     npcsInField: function (fieldId, day) {
@@ -255,7 +255,7 @@
         if (seen[id]) return;
         seen[id] = true;
         var n = byId[id];
-        if (n) out.push({ id: n.id, name: World.npcName(n.id), note: n.note || '', stageId: loc[id], stage: info.stage });
+        if (n) out.push({ id: n.id, name: World.npcName(n.id), note: World.npcNote(n.id, n.note), stageId: loc[id], stage: World.placeLabel(loc[id], info.stage) });
       });
       return out;
     },
@@ -266,11 +266,12 @@
       World.fields(areaId).forEach(function (f) {
         World.npcsInField(f.id, day).forEach(function (n) {
           if (!out[n.id]) out[n.id] = { id: n.id, name: n.name, note: n.note || '', where: [] };
-          out[n.id].where.push(f.name + '（' + n.stage + '）');
+          var fnm = World.placeLabel(f.id, f.name);
+          out[n.id].where.push(fnm + ' (' + n.stage + ')');
         });
       });
       return Object.keys(out).map(function (k) { return out[k]; })
-        .sort(function (a, b) { return a.name.localeCompare(b.name, 'ja'); });
+        .sort(function (a, b) { return a.name.localeCompare(b.name, (window.I18n && I18n.lang) || 'ja'); });
     },
 
     iconFor: function (npcId) {
@@ -286,6 +287,16 @@
       var base = hit ? hit.name : npcId;
       if (!window.I18n || !I18n.tc) return base;
       return I18n.tc('npc.' + String(npcId).replace(/^npc_/, ''), base);
+    },
+    npcNote: function (npcId, base) {
+      var key = String(npcId).replace(/^npc_/, '');
+      if (!base && World.npcs && World.npcs.npcs) {
+        var hit = World.npcs.npcs.filter(function (n) { return n.id === npcId; })[0];
+        if (hit && hit.note) base = hit.note;
+      }
+      if (!base) return '';
+      if (!window.I18n || !I18n.tc) return base;
+      return I18n.tc('npcnote.' + key, base);
     },
     placeLabel: function (id, base) {
       return (window.I18n && I18n.tc) ? I18n.tc('place.' + id, base) : base;
