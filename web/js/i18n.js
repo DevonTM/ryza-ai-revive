@@ -1311,19 +1311,22 @@
       samuel: 'サミュエル', kilo: 'キロ', romy: 'ロミィ', patricia: 'パトリシア',
       clifford: 'クリフォード', serri: 'セリ', volker: 'フォルカー', zephine: 'ゼフィーヌ',
       dennis: 'デニス', cassandra: 'カサンドラ', kala: 'カラ', alberta: 'アルベルタ',
-      saverio: 'サヴェリオ', anna: 'アンナ', dort: 'ドルト', federica: 'フェデリーカ', dian: 'ディアン', korou: '古老' },
+      saverio: 'サヴェリオ', anna: 'アンナ', dort: 'ドルト', federica: 'フェデリーカ', dian: 'ディアン', korou: '古老',
+      agate: 'アガーテ', lumber: 'ランバー', fressa: 'フレッサ', ruberto: 'ルベルト', fee: 'フィー', deadra: 'デアドラ' },
     zh: { ryza: '萊莎', lent: '蘭托', klaudia: '科洛蒂婭', tao: '塔奧', empel: '安佩爾',
       lila: '莉拉', boos: '博斯', moritz: '莫里茨', karl: '卡爾', mio: '米奧',
       samuel: '薩繆爾', kilo: '吉洛', romy: '羅密', patricia: '派翠夏',
       clifford: '克里佛德', serri: '賽莉', volker: '沃爾卡', zephine: '潔菲娜',
       dennis: '丹尼斯', cassandra: '卡珊德拉', kala: '卡菈', alberta: '阿爾貝塔',
-      saverio: '薩維里奧', anna: '安娜', dort: '多爾特', federica: '菲德麗卡', dian: '迪安', korou: '古老' },
+      saverio: '薩維里奧', anna: '安娜', dort: '多爾特', federica: '菲德麗卡', dian: '迪安', korou: '古老',
+      agate: '阿加特', lumber: '蘭伯', fressa: '芙蕾莎', ruberto: '魯伯特', fee: '菲', deadra: '迪爾德麗' },
     en: { ryza: 'Ryza', lent: 'Lent', klaudia: 'Klaudia', tao: 'Tao', empel: 'Empel',
       lila: 'Lila', boos: 'Bos', moritz: 'Moritz', karl: 'Karl', mio: 'Mio',
       samuel: 'Samuel', kilo: 'Kilo', romy: 'Romy', patricia: 'Patricia',
       clifford: 'Clifford', serri: 'Serri', volker: 'Volker', zephine: 'Zephine',
       dennis: 'Dennis', cassandra: 'Cassandra', kala: 'Kala', alberta: 'Alberta',
-      saverio: 'Saverio', anna: 'Anna', dort: 'Dort', federica: 'Federica', dian: 'Dian', korou: 'Elder' }
+      saverio: 'Saverio', anna: 'Anna', dort: 'Dort', federica: 'Federica', dian: 'Dian', korou: 'Elder',
+      agate: 'Agathe', lumber: 'Lumber', fressa: 'Fressa', ruberto: 'Lubart', fee: 'Fi', deadra: 'Deirdre' }
   };
   /* zh (simplified UI) mirrors the zh-TW official forms, char-converted */
   var NPC_ZH_TW = NPC_NAMES.zh;
@@ -1336,7 +1339,8 @@
       .replace(/薩維里奧/g, '萨维里奥').replace(/多爾特/g, '多尔特').replace(/沃爾卡/g, '沃尔卡')
       .replace(/博斯/g, '博斯').replace(/薩繆爾/g, '萨缪尔').replace(/派翠夏/g, '帕特莉夏')
       .replace(/克里佛德/g, '克里福德').replace(/潔菲娜/g, '洁菲娜').replace(/卡菈/g, '卡拉')
-      .replace(/阿爾貝塔/g, '阿尔贝塔');
+      .replace(/阿爾貝塔/g, '阿尔贝塔').replace(/蘭伯/g, '兰伯').replace(/魯伯特/g, '鲁伯特')
+      .replace(/迪爾德麗/g, '迪尔德丽');
   });
   ['ja', 'zh', 'zh-tw', 'en', 'hi', 'id', 'pt-br'].forEach(function (lg) {
     var dict = (lg === 'zh') ? NPC_ZH_CN : ((lg === 'ja') ? NPC_NAMES.ja : NPC_NAMES.en);

@@ -103,6 +103,12 @@ const noteNpcIds = npcPlacement.npcs.filter((n) => n.note).map((n) => n.id.repla
   ok(missingNotes.length === 0, 'All ' + noteNpcIds.length + ' NPC notes have npcnote.* in ' + lang + (missingNotes.length ? ' (missing: ' + missingNotes.join(', ') + ')' : ''));
 });
 
+const allNpcIds = npcPlacement.npcs.map((n) => n.id.replace(/^npc_/, ''));
+['ja', 'zh', 'en', 'id'].forEach((lang) => {
+  const missingNpcs = allNpcIds.filter((id) => !parsedContent[lang] || !(('npc.' + id) in parsedContent[lang]));
+  ok(missingNpcs.length === 0, 'All ' + allNpcIds.length + ' placement NPCs have npc.* in ' + lang + (missingNpcs.length ? ' (missing: ' + missingNpcs.join(', ') + ')' : ''));
+});
+
 console.log('--- Checking index.html for unlocalized tooltips ---');
 const html = fs.readFileSync(path.join(ROOT, 'web/index.html'), 'utf8');
 const tagRegex = /<[^>]+>/g;
