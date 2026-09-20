@@ -13,7 +13,7 @@
 
   function weekLabel(d) {
     var k = WEEK_KEYS[d];
-    return (window.I18n && I18n.tc) ? I18n.tc('dl.week.' + k, WEEK[d]) : WEEK[d];
+    return (window.I18n && I18n.t) ? I18n.t('dl.week.' + k) : WEEK[d];
   }
 
   function todForHour(h) {

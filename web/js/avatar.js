@@ -197,7 +197,7 @@
     init: function (onReady) {
       Avatar.host = makeHost('scene-canvas');
       if (!Avatar.host) {
-        App && App.toast((window.I18n && I18n.tc) ? I18n.tc('toast.noWebGL', '此浏览器不支持 WebGL，立绘无法显示') : '此浏览器不支持 WebGL，立绘无法显示', true);
+        App && App.toast((window.I18n && I18n.tc) ? I18n.tc('toast.noWebGL', 'WebGL not supported by this browser; character cannot be displayed') : 'WebGL not supported by this browser; character cannot be displayed', true);
         return;
       }
       Avatar.scene = makeLayer(Avatar.host);
@@ -891,7 +891,7 @@
       var tries = 0;
       (function poll() {
         if (a.isLoadingComplete()) {
-          if (a.hasErrors()) { done(new Error(((window.I18n && I18n.tc) ? I18n.tc('err.loadAsset', '素材加载失败：') : '素材加载失败：') + skelUrl)); return; }
+          if (a.hasErrors()) { done(new Error(((window.I18n && I18n.tc) ? I18n.tc('err.loadAsset', 'Failed to load asset: ') : 'Failed to load asset: ') + skelUrl)); return; }
           try {
             var atlas = a.require(atlasUrl);
             var loader = new spine.AtlasAttachmentLoader(atlas);
@@ -916,7 +916,7 @@
           } catch (e) { done(e); }
           return;
         }
-        if (++tries > 900) { done(new Error(((window.I18n && I18n.tc) ? I18n.tc('err.loadTimeout', '加载超时：') : '加载超时：') + skelUrl)); return; }
+        if (++tries > 900) { done(new Error(((window.I18n && I18n.tc) ? I18n.tc('err.loadTimeout', 'Loading timed out: ') : 'Loading timed out: ') + skelUrl)); return; }
         setTimeout(poll, 50);
       })();
     },
@@ -971,7 +971,7 @@
             cb && cb(null);
           });
         }).catch(function (e) {
-          App && App.toast(((window.I18n && I18n.tc) ? I18n.tc('err.loadSkin', '皮肤加载失败：') : '皮肤加载失败：') + e.message, true);
+          App && App.toast(((window.I18n && I18n.tc) ? I18n.tc('err.loadSkin', 'Failed to load skin: ') : 'Failed to load skin: ') + e.message, true);
           cb && cb(e);
         });
       };
@@ -987,7 +987,7 @@
         .then(function (scenes) {
           var stage = scenes[stageId];
           var entry = stage && (stage[tod] || stage[Object.keys(stage)[0]]);
-          if (!entry) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.noStage', '没有这个场景：') : '没有这个场景：') + stageId + '/' + tod);
+          if (!entry) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.noStage', 'Scene not found: ') : 'Scene not found: ') + stageId + '/' + tod);
           L.ready = false;
           var cfgP = entry.config
             ? fetch(entry.config).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; })

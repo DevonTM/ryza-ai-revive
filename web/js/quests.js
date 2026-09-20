@@ -284,9 +284,9 @@
 
       var match = (actType || q.type);
       if (match !== q.type) return { ok: false, line: L('qact.mismatch', '今のクエストと違うことをしたかったの？') };
-      if (!Game.spend(q.cost, 'quest')) return { ok: false, faint: true, line: 'スタミナが足りないよ…' };
+      if (!Game.spend(q.cost, 'quest')) return { ok: false, faint: true, line: L('qact.noStamina', 'Not enough stamina…') };
       var fn = Quests['act_' + q.type];
-      var res = fn ? fn(q, ctx) : { ok: false, line: 'まだできないことみたい。' };
+      var res = fn ? fn(q, ctx) : { ok: false, line: L('qact.notYet', "Doesn't seem like we can do that yet.") };
       if (res && res.ok) {
         setQuest(q);
         /* action filled the last step → clear (showClear inside guards

@@ -45,6 +45,15 @@ ok(missingInJa.length === 0, 'All zh keys exist in ja' + (missingInJa.length ? '
 ok(missingInEn.length === 0, 'All zh keys exist in en' + (missingInEn.length ? ' (missing: ' + missingInEn.join(', ') + ')' : ''));
 ok(missingInZh.length === 0, 'All ja keys exist in zh' + (missingInZh.length ? ' (missing: ' + missingInZh.join(', ') + ')' : ''));
 
+const enCodeMatch = i18nCode.match(/en:\s*(\{[\s\S]*?\n    \})/);
+const idCodeMatch = i18nCode.match(/T\.id\s*=\s*inherit\(T\.en,\s*(\{[\s\S]*?\})\);/);
+if (enCodeMatch && idCodeMatch) {
+  const rawEnKeys = Object.keys(eval('(' + enCodeMatch[1] + ')'));
+  const explicitIdKeys = Object.keys(eval('(' + idCodeMatch[1] + ')'));
+  const missingInId = rawEnKeys.filter((k) => !explicitIdKeys.includes(k));
+  ok(missingInId.length === 0, 'All ' + rawEnKeys.length + ' raw en UI keys explicitly translated in T.id' + (missingInId.length ? ' (missing: ' + missingInId.join(', ') + ')' : ''));
+}
+
 console.log('--- Checking non-CJK UI dictionaries for CJK leaks ---');
 const cjkRegex = /[\u4e00-\u9fff\u3040-\u30ff]/;
 ['en', 'id', 'hi', 'pt-br'].forEach((lang) => {
@@ -74,6 +83,13 @@ if (parsedContent.ja && parsedContent.zh && parsedContent.en) {
   if (parsedContent.id) {
     const cMissingId = cJaKeys.filter((k) => !(k in parsedContent.id));
     ok(cMissingId.length === 0, 'All ja content keys exist in id' + (cMissingId.length ? ' (missing: ' + cMissingId.join(', ') + ')' : ''));
+
+    let contentIdLeaks = [];
+    for (const k of Object.keys(parsedContent.id)) {
+      const val = String(parsedContent.id[k]);
+      if (cjkRegex.test(val)) contentIdLeaks.push(k + ': ' + val);
+    }
+    ok(contentIdLeaks.length === 0, 'No CJK characters in CONTENT.id' + (contentIdLeaks.length ? ' (leaks: ' + contentIdLeaks.join('; ') + ')' : ''));
   }
 }
 

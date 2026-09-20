@@ -20,11 +20,11 @@
       ctl.appendChild(b);
       return b;
     };
-    var pin = mk('win-pin', '📌', (window.I18n && I18n.tc) ? I18n.tc('win.pin', '窗口置顶') : '窗口置顶');
+    var pin = mk('win-pin', '📌', (window.I18n && I18n.tc) ? I18n.tc('win.pin', 'Always on top') : 'Always on top');
     pin.setAttribute('data-i18n-title', 'win.pin');
-    var min = mk('win-min', '—', (window.I18n && I18n.tc) ? I18n.tc('win.min', '最小化') : '最小化');
+    var min = mk('win-min', '—', (window.I18n && I18n.tc) ? I18n.tc('win.min', 'Minimize') : 'Minimize');
     min.setAttribute('data-i18n-title', 'win.min');
-    var cls = mk('win-close', '✕', (window.I18n && I18n.tc) ? I18n.tc('win.close', '关闭') : '关闭');
+    var cls = mk('win-close', '✕', (window.I18n && I18n.tc) ? I18n.tc('win.close', 'Close') : 'Close');
     cls.setAttribute('data-i18n-title', 'win.close');
     var settingsBtn = document.getElementById('btn-settings');
     if (settingsBtn && settingsBtn.parentNode === bar) {

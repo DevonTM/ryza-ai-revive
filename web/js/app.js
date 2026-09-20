@@ -490,7 +490,7 @@
         });
       };
       document.getElementById('btn-settings-reset').onclick = function () {
-        if (confirm((window.I18n && I18n.tc) ? I18n.tc('settings.resetAsk', '恢复所有设置为默认值？') : '恢复所有设置为默认值？')) {
+        if (confirm((window.I18n && I18n.tc) ? I18n.tc('settings.resetAsk', 'Reset all settings to defaults?') : 'Reset all settings to defaults?')) {
           Config.reset(); App.buildSettings(); App.buildCharaForm();
           App.toast(I18n.t('toast.saved'));
         }
@@ -1245,7 +1245,7 @@
           if (bar && e.message !== 'NO_KEY') bar.classList.remove('hidden');
           App.toast(e.message === 'NO_KEY' ? I18n.t('toast.needKey')
                                            : I18n.t('toast.llmFail') + e.message, true);
-          App.showBubble('（……うまく聞こえなかった。もう一回言って？）');
+          App.showBubble(I18n.tc('talk.mishear', '(...I didn’t catch that. Could you say that again?)'));
         });
     },
 
@@ -1717,7 +1717,7 @@
           days.appendChild(chips);
           var hint = document.createElement('div');
           hint.className = 'hint';
-          hint.textContent = I18n.t('alarm.everyday') + ' — ' + I18n.tc('alarm.everydayHint', '全不选即每天');
+          hint.textContent = I18n.t('alarm.everyday') + ' — ' + I18n.tc('alarm.everydayHint', 'leave all off for everyday');
           days.appendChild(hint);
           body.appendChild(days);
 
@@ -1734,7 +1734,7 @@
         },
         onOk: function (body) {
           var time = (body.querySelector('#f-alarm-time').value || '').slice(0, 5);
-          if (!/^\d{2}:\d{2}$/.test(time)) { App.toast(I18n.tc('alarm.needTime', '请填写时间'), true); return false; }
+          if (!/^\d{2}:\d{2}$/.test(time)) { App.toast(I18n.tc('alarm.needTime', 'Please enter a time'), true); return false; }
           var type = body.querySelector('#f-alarm-type').value;
           var style = body.querySelector('#f-alarm-style').value;
           var days = [];
@@ -2123,7 +2123,7 @@
       App._title(w, T('settings.llm'));
       App._field(w, T('settings.baseUrl'), Config.section('llm').baseUrl,
         function (v) { Config.set('llm.baseUrl', v); },
-        { hint: I18n.tc('settings.baseUrl.hint', 'OpenAI 兼容地址，以 /v1 结尾；也可放 config/providers.json 自动水合') });
+        { hint: I18n.tc('settings.baseUrl.hint', 'OpenAI-compatible URL ending in /v1; auto-hydrated from config/providers.json') });
       var models = App._llmModels || [];
       if (models.length) {
         var cur = Config.section('llm').model || '';
@@ -2549,10 +2549,10 @@
     _testLlm: function () {
       var llm = Config.section('llm');
       if (!llm.apiKey) { App.toast(I18n.t('toast.needKey'), true); return; }
-      App.toast(I18n.tc('toast.testing', '测试中…'));
+      App.toast(I18n.tc('toast.testing', 'Testing…'));
       Api.chat([], '短く一言、あいさつして。', { mode: 'chat', style: 'text' })
         .then(function (r) { App.toast('OK：' + r.text); })
-        .catch(function (e) { App.toast(I18n.tc('toast.fail', '失败：') + e.message, true); });
+        .catch(function (e) { App.toast(I18n.tc('toast.fail', 'Failed: ') + e.message, true); });
     },
 
     _testTts: function () {
@@ -2567,14 +2567,14 @@
       if (tts.provider !== 'fish' && Api.isPlaceholderModel(model)) {
         App.toast(I18n.t('toast.needModel'), true); return;
       }
-      App.toast(I18n.tc('toast.synthesizing', '合成中…'));
+      App.toast(I18n.tc('toast.synthesizing', 'Synthesizing…'));
       /* no explicit mode → Api.speak uses the live talk mode, so this
          doubles as a preview of the per-mode voice direction. */
-      Api.speak('やあ、聞こえてる？').then(function (url) {
-        if (!url) { App.toast(I18n.tc('toast.voiceOff', '语音已关闭')); return; }
+      Api.speak(I18n.tc('settings.testVoiceSample', 'Hello, can you hear me?')).then(function (url) {
+        if (!url) { App.toast(I18n.tc('toast.voiceOff', 'Voice is off')); return; }
         App.playUrl(url);
         App.toast('OK');
-      }).catch(function (e) { App.toast(I18n.tc('toast.fail', '失败：') + e.message, true); });
+      }).catch(function (e) { App.toast(I18n.tc('toast.fail', 'Failed: ') + e.message, true); });
     },
 
     buildCharaForm: function () {
@@ -2583,7 +2583,7 @@
       var T = function (k) { return I18n.t(k); };
       var c = Config.section('chara'), p = Config.section('profile');
 
-      App._title(w, I18n.tc('chara.ryzaTitle', 'ライザ（キャラ設定）'));
+      App._title(w, I18n.tc('chara.ryzaTitle', 'Ryza (Character settings)'));
       App._field(w, T('chara.personality'), c.personality,
         function (v) { Config.set('chara.personality', v); });
       App._field(w, T('chara.likes'), c.likes,
@@ -2597,7 +2597,7 @@
       App._field(w, T('chara.extra'), c.extra,
         function (v) { Config.set('chara.extra', v); }, { multi: true });
 
-      App._title(w, I18n.tc('chara.youTitle', 'あなた（プレイヤー設定）'));
+      App._title(w, I18n.tc('chara.youTitle', 'You (Player settings)'));
       App._field(w, T('onb.name'), p.name,
         function (v) { Config.set('profile.name', v); });
       App._field(w, T('onb.birthday'), p.birthday,
@@ -2627,13 +2627,13 @@
       var row = document.createElement('div');
       row.className = 'btn-row';
       var b = document.createElement('button');
-      b.className = 'btn primary'; b.textContent = I18n.tc('chara.saveAndBack', '保存并回到对话');
+      b.className = 'btn primary'; b.textContent = I18n.tc('chara.saveAndBack', 'Save and return to chat');
       b.onclick = function () { App.toast(I18n.t('toast.saved')); App.showView('talk'); };
       row.appendChild(b);
       var b2 = document.createElement('button');
-      b2.className = 'btn danger'; b2.textContent = I18n.tc('chara.clearHistory', '清空对话记忆');
+      b2.className = 'btn danger'; b2.textContent = I18n.tc('chara.clearHistory', 'Clear chat history');
       b2.onclick = function () {
-        if (confirm(I18n.tc('chara.clearHistoryAsk', '清空当前对话历史？'))) { App.setHistory([]); App.toast(I18n.tc('toast.cleared', '已清空')); }
+        if (confirm(I18n.tc('chara.clearHistoryAsk', 'Clear current chat history?'))) { App.setHistory([]); App.toast(I18n.tc('toast.cleared', 'Cleared')); }
       };
       row.appendChild(b2);
       w.appendChild(row);

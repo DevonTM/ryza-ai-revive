@@ -40,7 +40,7 @@
         return NAMES[oid] || oid;
       }
     } catch (e) {}
-    return '普段の服';
+    return (global.I18n && I18n.tc) ? I18n.tc('nsfw.outfitDefault', '普段の服') : '普段の服';
   }
 
   function init() {

@@ -466,7 +466,7 @@
       var code = j.code;
       if (code === 'ERR_INSUFFICIENT_CREDITS' || status === 402) {
         var need = j.required_quota || j.requiredQuota;
-        var qmsg = (window.I18n && I18n.tc) ? I18n.tc('err.quota', '积分不足') : '积分不足';
+        var qmsg = (window.I18n && I18n.tc) ? I18n.tc('err.quota', 'Insufficient quota') : 'Insufficient quota';
         return (msg || qmsg) + (need ? ' (' + need + ')' : '');
       }
       if (msg && code && String(code) && String(code) !== '200') {
@@ -501,8 +501,8 @@
         if (xhrJsonOk(xhr, j)) resolve(j);
         else reject(new Error(apiErrorMessage(j, xhr.status, xhr.responseText)));
       };
-      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', '网络请求失败（跨域或未走本地代理）') : '网络请求失败（跨域或未走本地代理）')); };
-      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', '请求超时') : '请求超时')); };
+      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', 'Network request failed (CORS or local proxy missing)') : 'Network request failed (CORS or local proxy missing)')); };
+      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', 'Request timed out') : 'Request timed out')); };
       xhr.send(JSON.stringify(body));
     });
   }
@@ -522,8 +522,8 @@
         if (xhrJsonOk(xhr, j)) resolve(j);
         else reject(new Error(apiErrorMessage(j, xhr.status, xhr.responseText)));
       };
-      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', '网络请求失败（跨域或未走本地代理）') : '网络请求失败（跨域或未走本地代理）')); };
-      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', '请求超时') : '请求超时')); };
+      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', 'Network request failed (CORS or local proxy missing)') : 'Network request failed (CORS or local proxy missing)')); };
+      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', 'Request timed out') : 'Request timed out')); };
       xhr.send();
     });
   }
@@ -578,8 +578,8 @@
         }
         reject(new Error(apiErrorMessage(j, xhr.status, raw)));
       };
-      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', '网络请求失败（跨域或未走本地代理）') : '网络请求失败（跨域或未走本地代理）')); };
-      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', '请求超时') : '请求超时')); };
+      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', 'Network request failed (CORS or local proxy missing)') : 'Network request failed (CORS or local proxy missing)')); };
+      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', 'Request timed out') : 'Request timed out')); };
       xhr.send(JSON.stringify(body));
     });
   }
@@ -596,8 +596,8 @@
         if (xhrJsonOk(xhr, j)) resolve(j);
         else reject(new Error(apiErrorMessage(j, xhr.status, xhr.responseText)));
       };
-      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', '网络请求失败（跨域或未走本地代理）') : '网络请求失败（跨域或未走本地代理）')); };
-      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', '请求超时') : '请求超时')); };
+      xhr.onerror = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.network', 'Network request failed (CORS or local proxy missing)') : 'Network request failed (CORS or local proxy missing)')); };
+      xhr.ontimeout = function () { reject(new Error((window.I18n && I18n.tc) ? I18n.tc('err.timeout', 'Request timed out') : 'Request timed out')); };
       xhr.send(form);
     });
   }
@@ -1347,7 +1347,7 @@
         }, tts.apiKey, 180000).then(function (j) {
           var msg = j.choices && j.choices[0] && j.choices[0].message;
           var data = msg && msg.audio && msg.audio.data;
-          if (!data) throw new Error((window.I18n && I18n.tc) ? I18n.tc('err.noAudio', '接口未返回音频') : '接口未返回音频');
+          if (!data) throw new Error((window.I18n && I18n.tc) ? I18n.tc('err.noAudio', 'API did not return audio') : 'API did not return audio');
           return Api._b64ToUrl(data, tts.format === 'mp3' ? 'audio/mpeg' : 'audio/wav');
         });
       }
@@ -1391,7 +1391,7 @@
         var url = aud && aud.url;
         if (data) return Api._b64ToUrl(data, 'audio/wav');
         if (url) return Api._downloadUrl(url);
-        throw new Error((window.I18n && I18n.tc) ? I18n.tc('err.qwenNoAudio', 'Qwen TTS 未返回音频') : 'Qwen TTS 未返回音频');
+        throw new Error((window.I18n && I18n.tc) ? I18n.tc('err.qwenNoAudio', 'Qwen TTS did not return audio') : 'Qwen TTS did not return audio');
       });
     },
 
@@ -1402,7 +1402,7 @@
       var headers = {};
       if (apiKey) headers.Authorization = 'Bearer ' + apiKey;
       return fetch(localProxy(qwenHttpsUrl(url)), { headers: headers }).then(function (r) {
-        if (!r.ok) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.audioHttp', '音频下载失败 HTTP ') : '音频下载失败 HTTP ') + r.status);
+        if (!r.ok) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.audioHttp', 'Audio download failed HTTP ') : 'Audio download failed HTTP ') + r.status);
         return r.blob();
       }).then(function (blob) { return URL.createObjectURL(blob); });
     },
@@ -1485,7 +1485,7 @@
         var wavs = files.filter(function (f) { return /\.wav$/i.test(f.name); });
         if (wavs.length) files = wavs;
         if (!files.length) {
-          throw new Error((window.I18n && I18n.tc) ? I18n.tc('err.noRyzaVoice', '找不到本地莱莎原声（需要 assets/audio/prologue/jp/*.m4a 或 voice/ryza_wav/*.wav）') : '找不到本地莱莎原声（需要 assets/audio/prologue/jp/*.m4a 或 voice/ryza_wav/*.wav）');
+          throw new Error((window.I18n && I18n.tc) ? I18n.tc('err.noRyzaVoice', 'Local Ryza audio not found (requires assets/audio/prologue/jp/*.m4a or voice/ryza_wav/*.wav)') : 'Local Ryza audio not found (requires assets/audio/prologue/jp/*.m4a or voice/ryza_wav/*.wav)');
         }
         var fd = new FormData();
         fd.append('name', 'ryza');
@@ -1537,7 +1537,7 @@
     /* Reference audio must reach the API as `data:audio/wav;base64,...`. */
     _fetchAsDataUrl: function (path) {
       return fetch(path).then(function (r) {
-        if (!r.ok) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.readRefAudio', '无法读取参考音频：') : '无法读取参考音频：') + path);
+        if (!r.ok) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.readRefAudio', 'Failed to read reference audio: ') : 'Failed to read reference audio: ') + path);
         return r.arrayBuffer();
       }).then(function (buf) {
         var bytes = new Uint8Array(buf), s = '', i;
