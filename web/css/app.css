@@ -85,7 +85,7 @@ input,select,textarea{font:inherit;color:inherit}
 .drawer-list li img{width:18px;height:18px;filter:invert(85%) sepia(15%) saturate(400%) hue-rotate(330deg)}
 .mode-pill img{width:16px;height:16px;display:inline-block;vertical-align:-3px;margin-right:4px;
   filter:invert(85%) sepia(15%) saturate(400%) hue-rotate(330deg)}
-#btn-send img{width:20px;height:20px;filter:none;invert:0}
+#btn-send img{width:20px;height:20px;filter:none}
 .icon-btn.on{background:rgba(232,180,92,.2);border-color:var(--gold)}
 .hud-chip{font-size:12px;padding:4px 9px;border-radius:999px;background:rgba(20,14,18,.6);
   border:1px solid var(--line);color:var(--dim);backdrop-filter:blur(8px);white-space:nowrap;
@@ -245,7 +245,7 @@ select{background:rgba(20,14,18,.9);border:1px solid var(--line);border-radius:9
 #phone.panel-collapsed #log-body{padding-top:4px;overflow:hidden}
 /* Clean two-line clamp — the old max-height:2.9em left the wrapped second
    line half-cut mid-glyph. Ellipsis after two full lines instead. */
-#phone.panel-collapsed #bubble{display:-webkit-box;-webkit-line-clamp:2;
+#phone.panel-collapsed #bubble{display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;
   -webkit-box-orient:vertical;overflow:hidden;line-height:1.5}
 #log-head{display:flex;align-items:center;gap:10px;padding:10px 0 8px;
   border-bottom:1px solid rgba(232,180,92,.14);flex:0 0 auto;cursor:pointer}
