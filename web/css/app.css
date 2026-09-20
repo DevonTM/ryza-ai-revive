@@ -373,7 +373,7 @@ select{background:rgba(20,14,18,.9);border:1px solid var(--line);border-radius:9
 .section-title{font-size:12px;color:var(--gold);letter-spacing:.1em;margin:22px 0 10px;
   padding-bottom:6px;border-bottom:1px solid var(--line);text-transform:uppercase}
 .section-title:first-child{margin-top:0}
-.btn-row{display:flex;gap:10px;margin-top:18px}
+.btn-row{display:flex;gap:10px;margin:14px 0 15px}
 .btn{flex:1;padding:12px;border-radius:11px;border:1px solid var(--line);
   background:rgba(232,180,92,.12);font-size:14px;transition:.15s;text-align:center}
 .btn:hover{background:rgba(232,180,92,.22)}
