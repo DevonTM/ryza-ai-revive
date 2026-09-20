@@ -58,9 +58,9 @@
       modelPreset: 'tts-model',
       presetVoice: 'Chloe',
       format: 'wav',
-      // Ryza's own take, shipped inside the APK.
-      reference: 'assets/voice/ryza_wav/prologue_08.wav',
-      referenceTranscript: '',       // optional text transcript for stateless clone (OpenRouter)
+      // Ryza's own voice sample for cloning (prologue 1, 2, 3 mix, ~16s).
+      reference: 'assets/voice/ryza_clone_reference.wav',
+      referenceTranscript: 'これは、ライザの夢の世界。あなたと作る、一夏の物語。この世界の主人公はあなた。決まった道も世界もなくて、あなたの言葉がそのまま物語になるの。',
       /* Base voice identity ("who talks"). Per-mode delivery ("how": ASMR
          whisper, story narrator…) lives in api.js MODE_TTS and is layered
          on top; put a string here (or per mode in modeHints) to override. */

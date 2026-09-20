@@ -99,4 +99,4 @@ Desktop and APK scripts invoke the privacy gate before and after produce.
 
 ## 5. Runtime resources
 
-After clone, restore binaries with `python scripts/restore_media.py <apk-or-unpacked-web>`. If files under `web/assets/` change, run `python scripts/build_indexes.py`.
+After clone, restore binaries with `python scripts/restore_media.py <apk-or-unpacked-web>`. If files under `web/assets/` change, run `python scripts/build_indexes.py`. Generate the voice clone reference audio with `python scripts/build_clone_reference.py`.

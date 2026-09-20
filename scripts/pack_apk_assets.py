@@ -12,7 +12,7 @@ import sys
 import zipfile
 
 STORED_EXT = {".png", ".jpg", ".jpeg", ".webp", ".gif", ".m4a", ".mp3", ".mp4",
-              ".skel", ".woff2", ".ttf", ".otf", ".ogg", ".aac"}
+              ".wav", ".skel", ".woff2", ".ttf", ".otf", ".ogg", ".aac"}
 
 
 def main() -> int:

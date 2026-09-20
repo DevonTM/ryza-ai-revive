@@ -55,6 +55,11 @@ python scripts/restore_media.py path\to\win-unpacked\resources\web
 ```
 
 If asset files change, regenerate indexes with `python scripts/build_indexes.py`.
+To generate the 16s Ryza voice cloning reference sample from prologue audio:
+
+```powershell
+python scripts/build_clone_reference.py
+```
 
 ---
 
