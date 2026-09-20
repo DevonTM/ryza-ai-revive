@@ -501,6 +501,9 @@
       document.querySelectorAll('.view').forEach(function (v) {
         v.classList.toggle('active', v.id === 'view-' + name);
       });
+      document.querySelectorAll('.drawer-list li[data-view]').forEach(function (x) {
+        x.classList.toggle('active', x.getAttribute('data-view') === name);
+      });
       document.getElementById('sheet-mode').classList.add('hidden');
       document.getElementById('sheet-inv').classList.add('hidden');
       document.getElementById('sheet-status').classList.add('hidden');
@@ -521,6 +524,41 @@
       if (name === 'alarm') Welcome.mark('alarm');
       if (name === 'quest') Quests.render(document.getElementById('quest-list'), {});
       if (name === 'daily') Daily.render(document.getElementById('daily-body'));
+    },
+
+    handleBack: function () {
+      var ms = document.getElementById('modal-scrim');
+      if (ms && !ms.classList.contains('hidden')) {
+        var cancelBtn = document.getElementById('modal-cancel');
+        if (cancelBtn) cancelBtn.click();
+        else App.closeModal();
+        return 1;
+      }
+      var oa = document.getElementById('overlay-alarm');
+      if (oa && !oa.classList.contains('hidden')) { App._dismissAlarm(); return 1; }
+      var of = document.getElementById('overlay-faint');
+      if (of && !of.classList.contains('hidden')) { of.classList.add('hidden'); return 1; }
+      var qc = document.getElementById('overlay-quest-clear');
+      if (qc && !qc.classList.contains('hidden')) { qc.classList.add('hidden'); return 1; }
+      var sheet = document.querySelector('.sheet:not(.hidden)');
+      if (sheet) { sheet.classList.add('hidden'); return 1; }
+      var drawer = document.getElementById('drawer');
+      if (drawer && drawer.classList.contains('open')) {
+        drawer.classList.remove('open');
+        var scrim = document.getElementById('scrim');
+        if (scrim) scrim.classList.remove('on');
+        return 1;
+      }
+      var sm = document.getElementById('side-menu');
+      if (sm && sm.classList.contains('open')) { sm.classList.remove('open'); return 1; }
+      var title = document.getElementById('overlay-title');
+      if (title && !title.classList.contains('hidden')) return 0;
+      var cur = document.querySelector('.view.active');
+      if (cur && cur.id !== 'view-talk') {
+        App.showView('talk');
+        return 1;
+      }
+      return 0;
     },
 
     _syncOpenViews: function () {

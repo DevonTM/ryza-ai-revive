@@ -8,6 +8,7 @@ import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Toast;
 
 /**
  * Thin WebView shell. No androidx — the whole app is the bundled web build
@@ -16,6 +17,7 @@ import android.webkit.WebViewClient;
 public class MainActivity extends Activity {
     private AssetServer server;
     private WebView web;
+    private long lastBackTime = 0;
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
@@ -44,8 +46,27 @@ public class MainActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-        if (web != null && web.canGoBack()) web.goBack();
-        else super.onBackPressed();
+        if (web == null) {
+            handleExitGuard();
+            return;
+        }
+        web.evaluateJavascript("window.App && App.handleBack ? App.handleBack() : 0", value -> {
+            if ("1".equals(value) || "true".equals(value)) {
+                lastBackTime = 0;
+                return;
+            }
+            handleExitGuard();
+        });
+    }
+
+    private void handleExitGuard() {
+        long now = System.currentTimeMillis();
+        if (now - lastBackTime < 2000) {
+            finishAffinity();
+        } else {
+            lastBackTime = now;
+            Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
