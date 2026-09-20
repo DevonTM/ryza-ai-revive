@@ -2342,7 +2342,8 @@
       /* ---------------- language matrix: UI / recorded voice / reply / TTS */
       App._title(w, T('nav.lang'));
       var langOpts = Langs.ALL.map(function (o) { return { v: o.v, t: T(o.k) }; });
-      App._select(w, T('settings.lang.ui'), Config.section('app').lang, langOpts,
+      var uiOpts = langOpts.filter(function (o) { return o.v !== 'auto'; });
+      App._select(w, T('settings.lang.ui'), Config.section('app').lang || 'en', uiOpts,
         function (v) {
           Config.set('app.lang', v); I18n.setLang(v); I18n.apply(document);
           App._relocalize();
