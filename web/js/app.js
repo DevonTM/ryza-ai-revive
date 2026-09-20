@@ -2245,6 +2245,7 @@
       App._title(w, T('settings.tts'));
       App._select(w, T('settings.tts.provider'), Config.section('tts').provider || 'openai', [
         { v: 'openai', t: T('settings.tts.provider.openai') },
+        { v: 'speech', t: T('settings.tts.provider.speech') },
         { v: 'qwen', t: T('settings.tts.provider.qwen') },
         { v: 'fish', t: T('settings.tts.provider.fish') }
       ], function (v) {
@@ -2346,35 +2347,67 @@
           { v: 'preset', t: T('settings.ttsMode.preset') },
           { v: 'off', t: T('settings.ttsMode.off') }
         ], function (v) { Config.set('tts.mode', v); App.buildSettings(); });
+      } else if (Config.section('tts').provider === 'speech') {
+        App._field(w, T('settings.baseUrl'), Config.section('tts').speechBaseUrl,
+          function (v) { Config.set('tts.speechBaseUrl', v); },
+          { hint: T('settings.speechBaseHint') });
+        App._field(w, T('settings.apiKey'), Config.section('tts').speechApiKey,
+          function (v) { Config.set('tts.speechApiKey', v); },
+          { password: true });
+        App._select(w, T('settings.ttsMode'), Config.section('tts').speechMode || 'clone', [
+          { v: 'clone', t: T('settings.ttsMode.clone') },
+          { v: 'preset', t: T('settings.ttsMode.preset') },
+          { v: 'off', t: T('settings.ttsMode.off') }
+        ], function (v) { Config.set('tts.speechMode', v); App.buildSettings(); });
+        if ((Config.section('tts').speechMode || 'clone') === 'clone') {
+          App._field(w, T('settings.model'), Config.section('tts').speechModel,
+            function (v) { Config.set('tts.speechModel', v); },
+            { hint: T('settings.modelCloneSpeech.hint') });
+          App._field(w, T('settings.refAudio'), Config.section('tts').reference,
+            function (v) { Config.set('tts.reference', v); },
+            { hint: I18n.tc('settings.refAudio.hint', '参考音频文件路径，必须是 wav 或 mp3 格式') });
+          App._field(w, T('settings.refTranscript'), Config.section('tts').referenceTranscript,
+            function (v) { Config.set('tts.referenceTranscript', v); },
+            { hint: T('settings.refTranscript.hint') });
+        } else if (Config.section('tts').speechMode === 'preset') {
+          App._field(w, T('settings.model'), Config.section('tts').speechModel,
+            function (v) { Config.set('tts.speechModel', v); },
+            { hint: I18n.tc('settings.modelPreset.hint', '预设音色通道使用的模型 id（服务端提供）') });
+          App._field(w, T('settings.presetVoice'), Config.section('tts').speechVoice,
+            function (v) { Config.set('tts.speechVoice', v); });
+        }
+        App._field(w, T('settings.styleHint'), Config.section('tts').styleHint,
+          function (v) { Config.set('tts.styleHint', v); },
+          { hint: T('settings.styleHint.hint') });
       } else {
-      App._field(w, T('settings.baseUrl'), Config.section('tts').baseUrl,
-        function (v) { Config.set('tts.baseUrl', v); },
-        { hint: T('settings.ttsBaseHint') });
-      App._field(w, T('settings.apiKey'), Config.section('tts').apiKey,
-        function (v) { Config.set('tts.apiKey', v); },
-        { password: true });
-      App._select(w, T('settings.ttsMode'), Config.section('tts').mode, [
-        { v: 'clone', t: T('settings.ttsMode.clone') },
-        { v: 'preset', t: T('settings.ttsMode.preset') },
-        { v: 'off', t: T('settings.ttsMode.off') }
-      ], function (v) { Config.set('tts.mode', v); App.buildSettings(); });
-      if (Config.section('tts').mode === 'clone') {
-        App._field(w, T('settings.model'), Config.section('tts').modelClone,
-          function (v) { Config.set('tts.modelClone', v); },
-          { hint: I18n.tc('settings.modelClone.hint', '克隆通道使用的模型 id（服务端提供，如 MiMo 的声音克隆模型）') });
-        App._field(w, T('settings.refAudio'), Config.section('tts').reference,
-          function (v) { Config.set('tts.reference', v); },
-          { hint: I18n.tc('settings.refAudio.hint', '必须是 wav 或 mp3；APK 里的原声是 m4a，需先转码') });
-      } else if (Config.section('tts').mode === 'preset') {
-        App._field(w, T('settings.model'), Config.section('tts').modelPreset,
-          function (v) { Config.set('tts.modelPreset', v); },
-          { hint: I18n.tc('settings.modelPreset.hint', '预设音色通道使用的模型 id（服务端提供）') });
-        App._field(w, T('settings.presetVoice'), Config.section('tts').presetVoice,
-          function (v) { Config.set('tts.presetVoice', v); });
-      }
-      App._field(w, T('settings.styleHint'), Config.section('tts').styleHint,
-        function (v) { Config.set('tts.styleHint', v); },
-        { hint: T('settings.styleHint.hint') });
+        App._field(w, T('settings.baseUrl'), Config.section('tts').baseUrl,
+          function (v) { Config.set('tts.baseUrl', v); },
+          { hint: T('settings.ttsBaseHint') });
+        App._field(w, T('settings.apiKey'), Config.section('tts').apiKey,
+          function (v) { Config.set('tts.apiKey', v); },
+          { password: true });
+        App._select(w, T('settings.ttsMode'), Config.section('tts').mode, [
+          { v: 'clone', t: T('settings.ttsMode.clone') },
+          { v: 'preset', t: T('settings.ttsMode.preset') },
+          { v: 'off', t: T('settings.ttsMode.off') }
+        ], function (v) { Config.set('tts.mode', v); App.buildSettings(); });
+        if (Config.section('tts').mode === 'clone') {
+          App._field(w, T('settings.model'), Config.section('tts').modelClone,
+            function (v) { Config.set('tts.modelClone', v); },
+            { hint: I18n.tc('settings.modelClone.hint', '克隆通道使用的模型 id（服务端提供，如 MiMo 的声音克隆模型）') });
+          App._field(w, T('settings.refAudio'), Config.section('tts').reference,
+            function (v) { Config.set('tts.reference', v); },
+            { hint: I18n.tc('settings.refAudio.hint', '参考音频文件路径，必须是 wav 或 mp3 格式') });
+        } else if (Config.section('tts').mode === 'preset') {
+          App._field(w, T('settings.model'), Config.section('tts').modelPreset,
+            function (v) { Config.set('tts.modelPreset', v); },
+            { hint: I18n.tc('settings.modelPreset.hint', '预设音色通道使用的模型 id（服务端提供）') });
+          App._field(w, T('settings.presetVoice'), Config.section('tts').presetVoice,
+            function (v) { Config.set('tts.presetVoice', v); });
+        }
+        App._field(w, T('settings.styleHint'), Config.section('tts').styleHint,
+          function (v) { Config.set('tts.styleHint', v); },
+          { hint: T('settings.styleHint.hint') });
       }
 
       /* ---------------- language matrix: UI / recorded voice / reply / TTS */
@@ -2596,14 +2629,19 @@
 
     _testTts: function () {
       var tts = Config.section('tts');
+      var isSpeech = tts.provider === 'speech';
+      var activeMode = isSpeech ? (tts.speechMode || 'clone') : tts.mode;
+      if (activeMode === 'off') { App.toast(I18n.tc('toast.voiceOff', 'Voice is off')); return; }
       var key = tts.provider === 'qwen' ? tts.qwenApiKey
               : tts.provider === 'fish' ? tts.fishApiKey
+              : isSpeech ? tts.speechApiKey
               : tts.apiKey;
       if (!key) { App.toast(I18n.t('toast.needKey'), true); return; }
       var model = tts.provider === 'qwen' ? (tts.qwenModel || 'qwen3-tts-flash')
                 : tts.provider === 'fish' ? (tts.fishModel || 'fishaudio-s21pro-flash')
+                : isSpeech ? tts.speechModel
                 : (tts.mode === 'clone' ? tts.modelClone : tts.modelPreset);
-      if (tts.provider !== 'fish' && Api.isPlaceholderModel(model)) {
+      if (tts.provider !== 'fish' && (!model || Api.isPlaceholderModel(model))) {
         App.toast(I18n.t('toast.needModel'), true); return;
       }
       App.toast(I18n.tc('toast.synthesizing', 'Synthesizing…'));

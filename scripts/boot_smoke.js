@@ -186,18 +186,9 @@ for (const f of ['util.js', 'config.js', 'i18n.js', 'api.js', 'memory.js',
        'asmr playback shaping present');
     ok(A.isPlaceholderModel('tts-model') && !A.isPlaceholderModel('mimo-audio'),
        'placeholder-model check centralized');
-    C.set('tts.baseUrl', 'https://example.com/v1/audio/speech');
-    C.set('tts.apiKey', 'fake-key');
-    C.set('tts.mode', 'clone');
-    C.set('tts.modelClone', 'tts-1');
-    let cloneSpeechErr = null;
-    await A.speak('test').catch(e => { cloneSpeechErr = e.message; });
-    ok(cloneSpeechErr === 'audio/speech does not support clone mode',
-       'audio/speech rejects clone mode');
-    C.set('tts.baseUrl', '');
-    C.set('tts.apiKey', '');
-    C.set('tts.mode', 'clone');
-    C.set('tts.modelClone', 'voice-clone-model');
+    const speechCloneBody = A._buildSpeechBody('fish-audio/s2.1-pro', 'test', { mode: 'clone' }, '', 'https://openrouter.ai/api/v1/audio/speech');
+    ok(speechCloneBody.voice === undefined && speechCloneBody.response_format === 'mp3',
+       'audio/speech clone mode omits voice');
     const nsfwTag = A.parseTaggedReply('[emotion:shy|attitude:agree|undress:on]\nhi');
     ok(nsfwTag.nsfw === true && nsfwTag.emotion === 'shy', 'undress:on parses with extra pipes');
     const spacedNsfw = A.parseTaggedReply('[emotion: shy | undress: on]\nhi');

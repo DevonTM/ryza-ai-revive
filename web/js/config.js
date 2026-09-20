@@ -37,8 +37,10 @@
     },
 
     /* ---- TTS providers ----
-       provider 'openai': any OpenAI-compatible chat/completions + audio.voice
+       provider 'openai': OpenAI-compatible /chat/completions + audio.voice
                           (e.g. Xiaomi MiMo voice-clone).
+       provider 'speech': OpenAI-compatible /v1/audio/speech (e.g. OpenRouter,
+                          Inworld). Clone mode uses input_references.
        provider 'qwen'  : DashScope-compatible TTS (official, workspace, or
                           a third-party host with the same /api/v1/services
                           paths). Model id is free-typed; qwen3-tts-* uses
@@ -58,11 +60,18 @@
       format: 'wav',
       // Ryza's own take, shipped inside the APK.
       reference: 'assets/voice/ryza_wav/prologue_08.wav',
+      referenceTranscript: '',       // optional text transcript for stateless clone (OpenRouter)
       /* Base voice identity ("who talks"). Per-mode delivery ("how": ASMR
          whisper, story narrator…) lives in api.js MODE_TTS and is layered
          on top; put a string here (or per mode in modeHints) to override. */
       styleHint: '明るく元気な若い女性の声。親しみやすい口調で。',
       modeHints: {},                 // { chat, story, immersive, asmr, text } overrides
+      /* speech-specific — endpoint + key + model + voice are SEPARATE from openai/qwen/fish. */
+      speechMode: 'clone',           // 'clone' | 'preset' | 'off'
+      speechBaseUrl: '',
+      speechApiKey: '',
+      speechModel: '',
+      speechVoice: 'b347db033a6549378b48d00acb0d06cd',
       /* qwen-specific — endpoint + key are SEPARATE from the openai ones so
          switching providers never sends a MiMo URL/key to DashScope or back.
          Empty qwenBaseUrl falls back to the public DashScope host. */
@@ -271,10 +280,19 @@
             if (p.tts.model_clone) data.tts.modelClone = p.tts.model_clone;
             if (p.tts.model_preset) data.tts.modelPreset = p.tts.model_preset;
             if (p.tts.reference_audio) data.tts.reference = p.tts.reference_audio;
+            if (p.tts.reference_transcript) data.tts.referenceTranscript = p.tts.reference_transcript;
           }
           if (p.tts.qwen_api_key && !data.tts.qwenApiKey) {
             data.tts.qwenApiKey = p.tts.qwen_api_key;
             if (p.tts.qwen_base_url) data.tts.qwenBaseUrl = p.tts.qwen_base_url;
+          }
+          if (p.tts.speech_api_key && !data.tts.speechApiKey) {
+            data.tts.speechApiKey = p.tts.speech_api_key;
+            if (p.tts.speech_base_url) data.tts.speechBaseUrl = p.tts.speech_base_url;
+            if (p.tts.speech_model) data.tts.speechModel = p.tts.speech_model;
+            if (p.tts.speech_voice) data.tts.speechVoice = p.tts.speech_voice;
+            if (p.tts.speech_mode) data.tts.speechMode = p.tts.speech_mode;
+            if (p.tts.provider === 'speech') data.tts.provider = 'speech';
           }
           if (p.tts.fish_api_key && !data.tts.fishApiKey) {
             data.tts.fishApiKey = p.tts.fish_api_key;

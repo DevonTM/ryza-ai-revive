@@ -1291,16 +1291,18 @@
     /* ------------------------------------------------------------- TTS */
     /* Resolves to a Blob URL. Returns null when voice is disabled.
        provider: 'openai' (chat/completions + audio, MiMo-style),
+       'speech' (OpenAI-compatible /v1/audio/speech, e.g. OpenRouter, Inworld),
        'qwen' (DashScope-compatible TTS), or 'fish' (Fish Audio Open API
        POST /speech/tts, binary audio). `mode` is the talk mode. */
     speak: function (text, lang, mode) {
       var tts = Config.section('tts');
-      if (tts.mode === 'off') return Promise.resolve(null);
       mode = mode || (Config.section('state') || {}).mode || 'chat';
       /* Per-provider credentials: qwen has its own baseUrl/apiKey so a MiMo
          setup can never leak into a DashScope call (or back). */
       if ((tts.provider || 'openai') === 'qwen') return Api._qwenSpeak(text, lang, mode);
       if (tts.provider === 'fish') return Api._fishSpeak(text, lang, mode);
+      if (tts.provider === 'speech') return Api._speechSpeak(text, lang, mode);
+      if (tts.mode === 'off') return Promise.resolve(null);
       if (!tts.apiKey) return Promise.reject(new Error('NO_KEY'));
 
       var audio = { format: tts.format || 'wav' };
@@ -1318,22 +1320,6 @@
         return Promise.reject(new Error('NO_MODEL'));
       }
       var styleHint = ttsStyleFor(mode, tts);
-
-      var cleanBase = String(tts.baseUrl || '').trim().replace(/\/+$/, '');
-      if (/(?:\/audio)?\/speech$/i.test(cleanBase)) {
-        if (tts.mode === 'clone') {
-          return Promise.reject(new Error('audio/speech does not support clone mode'));
-        }
-        // ponytail: standard OpenAI TTS body; skipped speed/pitch, add when tts config gains slider.
-        var speechBody = {
-          model: model,
-          input: text,
-          voice: tts.presetVoice || 'Chloe',
-          response_format: tts.format || 'wav'
-        };
-        if (styleHint) speechBody.instructions = styleHint;
-        return requestAudio(localProxy(cleanBase), speechBody, tts.apiKey, 180000);
-      }
 
       function send(voiceField) {
         audio.voice = voiceField;
@@ -1356,6 +1342,61 @@
         return Api._fetchAsDataUrl(tts.reference).then(send);
       }
       return send(audio.voice);
+    },
+
+    /* ----------------------------------- OpenAI /v1/audio/speech (OpenRouter, Inworld) */
+    _speechEndpointUrl: function (baseUrl) {
+      var b = String(baseUrl || '').trim().replace(/\/+$/, '');
+      if (/(?:\/audio)?\/speech$/i.test(b)) return b;
+      return upstreamUrl(b, '/audio/speech');
+    },
+
+    _buildSpeechBody: function (model, text, tts, styleHint, targetUrl) {
+      var body = {
+        model: model,
+        input: text,
+        response_format: 'mp3'
+      };
+      var smode = tts.speechMode || tts.mode;
+      if (smode !== 'clone') {
+        body.voice = tts.speechVoice || tts.presetVoice || 'b347db033a6549378b48d00acb0d06cd';
+      }
+      if (styleHint) {
+        if (/openrouter\.ai/i.test(targetUrl || '')) {
+          var slug = (model.indexOf('/') !== -1 ? model.split('/')[0] : 'openai').toLowerCase();
+          if (slug === 'microsoft') slug = 'azure';
+          body.provider = { options: {} };
+          body.provider.options[slug] = { instructions: styleHint };
+        } else {
+          body.instructions = styleHint;
+        }
+      }
+      return body;
+    },
+
+    _speechSpeak: function (text, lang, mode) {
+      var tts = Config.section('tts');
+      if (tts.speechMode === 'off') return Promise.resolve(null);
+      if (!tts.speechApiKey) return Promise.reject(new Error('NO_KEY'));
+      var model = String(tts.speechModel || '').trim();
+      if (!model || isPlaceholderModel(model)) {
+        return Promise.reject(new Error('NO_MODEL'));
+      }
+      var styleHint = ttsStyleFor(mode, tts);
+      var cleanBase = String(tts.speechBaseUrl || '').trim().replace(/\/+$/, '');
+      var targetUrl = Api._speechEndpointUrl(cleanBase);
+      var speechBody = Api._buildSpeechBody(model, text, tts, styleHint, targetUrl);
+
+      if (tts.speechMode === 'clone') {
+        return Api._fetchAsDataUrl(tts.reference).then(function (dataUrl) {
+          var refs = [{ type: 'input_audio', input_audio: { data: dataUrl } }];
+          var tr = String(tts.referenceTranscript || '').trim();
+          if (tr) refs.push({ type: 'text', text: tr });
+          speechBody.input_references = refs;
+          return requestAudio(localProxy(targetUrl), speechBody, tts.speechApiKey, 180000);
+        });
+      }
+      return requestAudio(localProxy(targetUrl), speechBody, tts.speechApiKey, 180000);
     },
 
     /* ------------------------------------------- Qwen / Bailian (DashScope) */
@@ -1534,7 +1575,7 @@
       return URL.createObjectURL(new Blob([arr], { type: mime }));
     },
 
-    /* Reference audio must reach the API as `data:audio/wav;base64,...`. */
+    /* Reference audio must reach the API as `data:audio/...;base64,...`. */
     _fetchAsDataUrl: function (path) {
       return fetch(path).then(function (r) {
         if (!r.ok) throw new Error(((window.I18n && I18n.tc) ? I18n.tc('err.readRefAudio', 'Failed to read reference audio: ') : 'Failed to read reference audio: ') + path);
@@ -1542,7 +1583,8 @@
       }).then(function (buf) {
         var bytes = new Uint8Array(buf), s = '', i;
         for (i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-        return 'data:audio/wav;base64,' + btoa(s);
+        var mime = /\.mp3$/i.test(path) ? 'audio/mpeg' : 'audio/wav';
+        return 'data:' + mime + ';base64,' + btoa(s);
       });
     }
   };
