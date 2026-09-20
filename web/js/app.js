@@ -302,7 +302,7 @@
           var act = li.getAttribute('data-action');
           if (act === 'newTalk') { open(false); App._confirmNewTalk(); return; }
           if (act === 'lang') { open(false); App._openLangSheet(); return; }
-          if (act === 'toggleChara') { App._toggleChara(); return; }
+          if (act === 'toggleChara') { open(false); App._toggleChara(); return; }
           if (act === 'fullscreen') { open(false); App._toggleFullscreen(); return; }
           document.querySelectorAll('.drawer-list li').forEach(function (x) {
             x.classList.remove('active');
